@@ -118,8 +118,6 @@ public class Transaction extends NamedEntity {
     return element;
   }
 
-  /** STATICS **/
-
   /**
    *
    * @return

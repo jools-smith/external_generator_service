@@ -1,11 +1,10 @@
 package com.flexnet.external.webservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.flexnet.external.type.SvcException;
 import com.flexnet.external.utils.ConsoleLogger;
 import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.transaction.Transaction;
 import org.apache.commons.io.FileUtils;
 
@@ -24,11 +23,11 @@ public abstract class ServiceBase {
   protected final ConsoleLogger logger = new ConsoleLogger(this.getClass());
 
   /** STATIC **/
-  protected final static ObjectMapper mapper = new ObjectMapper()
-          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-          .enable(SerializationFeature.INDENT_OUTPUT);
+//  protected final static ObjectMapper mapper = new ObjectMapper()
+//          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+//          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
+//          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+//          .enable(SerializationFeature.INDENT_OUTPUT);
 
   protected final static Diagnostics diagnostics = new Diagnostics();
 //  protected final static Manager manager = new Manager();
@@ -55,7 +54,7 @@ public abstract class ServiceBase {
         final Path file = Paths.get(storage + trans.key() + ".json");
         try {
           rootLogger.trace(file.toAbsolutePath().toString());
-          FileUtils.writeStringToFile(file.toFile(), mapper.writeValueAsString(trans), Charset.defaultCharset());
+          FileUtils.writeStringToFile(file.toFile(), Utils.json_mapper_indented.writeValueAsString(trans), Charset.defaultCharset());
         }
         catch (final Exception t) {
           rootLogger.error(t);
@@ -118,7 +117,7 @@ public abstract class ServiceBase {
   };
 
   static {
-    mapper.findAndRegisterModules();
+//    mapper.findAndRegisterModules();
 
     Optional.ofNullable(Listener.instance.get()).ifPresent(listener -> {
 //      listener.registerContextInitialized(context_initialized);

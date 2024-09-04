@@ -9,7 +9,6 @@ import java.time.Instant;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class TimedEntity {
-
   protected final Instant start = Instant.now();
 
   protected Duration duration;

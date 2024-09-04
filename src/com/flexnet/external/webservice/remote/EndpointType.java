@@ -1,6 +1,6 @@
 package com.flexnet.external.webservice.remote;
 
-public enum Endpoint {
+public enum EndpointType {
   health,
   ping,
   //IGI_

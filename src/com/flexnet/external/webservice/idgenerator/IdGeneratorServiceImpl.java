@@ -3,7 +3,7 @@ package com.flexnet.external.webservice.idgenerator;
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.webservice.ServiceBase;
-import com.flexnet.external.webservice.remote.Endpoint;
+import com.flexnet.external.webservice.remote.EndpointType;
 import com.flexnet.external.webservice.remote.Executor;
 import com.flexnet.external.webservice.remote.Identifier;
 import com.flexnet.external.webservice.remote.Ping;
@@ -26,7 +26,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<PingRequest, Ping, PingResponse> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.ping, payload)
+              .execute(EndpointType.ping, payload)
               .decode(Ping.class)
               .encode(Ping.encode)
               .value();
@@ -47,7 +47,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<Entitlement, Identifier, Id> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.IGI_generateEntitlementID, payload)
+              .execute(EndpointType.IGI_generateEntitlementID, payload)
               .decode(Identifier.class)
               .encode(Identifier.encode)
               .value();
@@ -68,7 +68,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<EntitlementLineItem, Identifier, Id> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.IGI_generateLineItemID, payload)
+              .execute(EndpointType.IGI_generateLineItemID, payload)
               .decode(Identifier.class)
               .encode(Identifier.encode)
               .value();
@@ -89,7 +89,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<BulkEntitlement, Identifier, Id> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.IGI_generateWebRegKey, payload)
+              .execute(EndpointType.IGI_generateWebRegKey, payload)
               .decode(Identifier.class)
               .encode(Identifier.encode)
               .value();
@@ -110,7 +110,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<MaintenanceItem, Identifier, Id> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.IGI_generateMaintenanceItemID, payload)
+              .execute(EndpointType.IGI_generateMaintenanceItemID, payload)
               .decode(Identifier.class)
               .encode(Identifier.encode)
               .value();
@@ -131,7 +131,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<FulfillmentRecord, Identifier, Id> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.IGI_generateFulfillmentID, payload)
+              .execute(EndpointType.IGI_generateFulfillmentID, payload)
               .decode(Identifier.class)
               .encode(Identifier.encode)
               .value();
@@ -152,7 +152,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Executor<ConsolidatedLicenseRecord, Identifier, Id> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.IGI_generateConsolidatedLicenseID, payload)
+              .execute(EndpointType.IGI_generateConsolidatedLicenseID, payload)
               .decode(Identifier.class)
               .encode(Identifier.encode)
               .value();

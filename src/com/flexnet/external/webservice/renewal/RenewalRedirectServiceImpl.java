@@ -1,13 +1,11 @@
 package com.flexnet.external.webservice.renewal;
 
-import com.flexnet.external.type.PingRequest;
-import com.flexnet.external.type.PingResponse;
-import com.flexnet.external.type.RenewableEntitlementLineItems;
-import com.flexnet.external.type.RenewalResponse;
+import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.webservice.ServiceBase;
-import com.flexnet.external.webservice.remote.Dummy;
-import com.flexnet.external.webservice.remote.Endpoint;
+import com.flexnet.external.webservice.keygenerator.LicGeneratorException;
+import com.flexnet.external.webservice.remote.UnknownReply;
+import com.flexnet.external.webservice.remote.EndpointType;
 import com.flexnet.external.webservice.remote.Executor;
 import com.flexnet.external.webservice.remote.Ping;
 
@@ -30,7 +28,7 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
     final Executor<PingRequest, Ping, PingResponse> executor = Executor.createExecutor();
     try {
       return executor
-              .execute(Endpoint.ping, payload)
+              .execute(EndpointType.ping, payload)
               .decode(Ping.class)
               .encode(Ping.encode)
               .value();
@@ -48,13 +46,19 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
   public RenewalResponse request(final RenewableEntitlementLineItems payload) throws RenewalSeviceException {
     super.logger.in();
     final Token token = token();
+    final Executor<RenewableEntitlementLineItems, UnknownReply, RenewalResponse> executor = Executor.createExecutor();
     try {
-      return Executor.execute(Dummy.class, Endpoint.RSI_request, payload).decode(RenewalResponse.class);
+      return executor
+              .execute(EndpointType.RRI_request, payload)
+              .decode(UnknownReply.class)
+              .encode((v) -> new RenewalResponse())
+              .value();
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
+      executor.commit();
       token.commit();
     }
   }

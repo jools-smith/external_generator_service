@@ -100,7 +100,7 @@ public class Executor<V,T,S> {
    * @throws URISyntaxException
    * @throws IOException
    */
-  public Executor<V,T,S> execute(final Endpoint endpoint, final V payload) throws URISyntaxException, IOException {
+  public Executor<V,T,S> execute(final EndpointType endpoint, final V payload) throws URISyntaxException, IOException {
 
     this.transaction.createElement();
     final HttpPost request = new HttpPost(new URIBuilder()
@@ -145,38 +145,38 @@ public class Executor<V,T,S> {
    * @throws URISyntaxException
    * @throws IOException
    */
-  public static <T> T execute(final Class<T> clazz, final Endpoint endpoint, final Object payload)
-          throws URISyntaxException, IOException {
-
-    final HttpPost request = new HttpPost(new URIBuilder()
-            .setScheme("http")
-            .setHost("localhost")
-            .setPort(5245)
-            .setPath("revenera/api/1.0/process/" + endpoint.toString()).build());
-
-    if (payload != null) {
-      final String content = mapper.writeValueAsString(payload);
-
-      final StringEntity entity = new StringEntity(content);
-
-      request.setEntity(entity);
-    }
-
-    request.setHeader("Content-type", "application/json");
-    request.setHeader("Accept", "application/json");
-
-    try (final CloseableHttpClient client = HttpClients.createDefault();) {
-      final CloseableHttpResponse response = client.execute(request);
-
-      final byte[] content = IOUtils.toByteArray(response.getEntity().getContent());
-
-      if (response.getCode() == 200) {
-        return mapper.readValue(content, clazz);
-      }
-
-      throw new RuntimeException(String.format("code:%d %s", response.getCode(), content == null ? "" : new String(content)));
-    }
-  }
+//  public static <T> T execute(final Class<T> clazz, final EndpointType endpoint, final Object payload)
+//          throws URISyntaxException, IOException {
+//
+//    final HttpPost request = new HttpPost(new URIBuilder()
+//            .setScheme("http")
+//            .setHost("localhost")
+//            .setPort(5245)
+//            .setPath("revenera/api/1.0/process/" + endpoint.toString()).build());
+//
+//    if (payload != null) {
+//      final String content = mapper.writeValueAsString(payload);
+//
+//      final StringEntity entity = new StringEntity(content);
+//
+//      request.setEntity(entity);
+//    }
+//
+//    request.setHeader("Content-type", "application/json");
+//    request.setHeader("Accept", "application/json");
+//
+//    try (final CloseableHttpClient client = HttpClients.createDefault();) {
+//      final CloseableHttpResponse response = client.execute(request);
+//
+//      final byte[] content = IOUtils.toByteArray(response.getEntity().getContent());
+//
+//      if (response.getCode() == 200) {
+//        return mapper.readValue(content, clazz);
+//      }
+//
+//      throw new RuntimeException(String.format("code:%d %s", response.getCode(), content == null ? "" : new String(content)));
+//    }
+//  }
 
   /**
    *
