@@ -1,11 +1,11 @@
 package com.flexnet.external.webservice;
 
+import com.flexnet.external.utils.ConsoleLogger;
 import com.flexnet.external.webservice.transaction.TransactionException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Listener implements ServletContextListener {

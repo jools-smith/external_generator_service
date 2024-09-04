@@ -1,13 +1,17 @@
 package com.flexnet.external.webservice.renewal;
 
-import javax.jws.WebService;
-
 import com.flexnet.external.type.PingRequest;
 import com.flexnet.external.type.PingResponse;
 import com.flexnet.external.type.RenewableEntitlementLineItems;
 import com.flexnet.external.type.RenewalResponse;
-import com.flexnet.external.webservice.Diagnostics.Token;
+import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.webservice.ServiceBase;
+import com.flexnet.external.webservice.remote.Dummy;
+import com.flexnet.external.webservice.remote.Endpoint;
+import com.flexnet.external.webservice.remote.Executor;
+import com.flexnet.external.webservice.remote.Ping;
+
+import javax.jws.WebService;
 
 @WebService(
         endpointInterface = "com.flexnet.external.webservice.renewal.RenewalServiceInterface",
@@ -23,7 +27,7 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
   public PingResponse ping(final PingRequest payload) throws RenewalSeviceException {
     super.logger.in();
     final Token token = token();
-    final Executor<PingRequest, Ping, PingResponse> executor = super.createExecutor();
+    final Executor<PingRequest, Ping, PingResponse> executor = Executor.createExecutor();
     try {
       return executor
               .execute(Endpoint.ping, payload)
@@ -45,7 +49,7 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.RSI_request, payload).decode(RenewalResponse.class);
+      return Executor.execute(Dummy.class, Endpoint.RSI_request, payload).decode(RenewalResponse.class);
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));

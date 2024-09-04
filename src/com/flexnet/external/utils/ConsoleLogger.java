@@ -1,4 +1,4 @@
-package com.flexnet.external.webservice;
+package com.flexnet.external.utils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

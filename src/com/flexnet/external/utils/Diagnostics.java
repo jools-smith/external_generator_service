@@ -1,4 +1,4 @@
-package com.flexnet.external.webservice;
+package com.flexnet.external.utils;
 
 import java.time.Duration;
 import java.time.Instant;

@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "RenewalService", targetNamespace = "urn:renewal.webservice.external.flexnet.com", wsdlLocation = "file:/D:/development/extgenservice/schema/RenewalService.wsdl")
+@WebServiceClient(name = "RenewalService", targetNamespace = "urn:renewal.webservice.external.flexnet.com", wsdlLocation = "file:/D:/development/external_generator_service/schema/RenewalService.wsdl")
 public class RenewalService
     extends Service
 {
@@ -30,7 +30,7 @@ public class RenewalService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/D:/development/extgenservice/schema/RenewalService.wsdl");
+            url = new URL("file:/D:/development/external_generator_service/schema/RenewalService.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

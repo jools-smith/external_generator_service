@@ -1,21 +1,11 @@
 package com.flexnet.external.webservice.keygenerator;
 
-import javax.jws.WebService;
-
-import com.flexnet.external.type.ConsolidatedLicense;
-import com.flexnet.external.type.ConsolidatedLicenseResquest;
-import com.flexnet.external.type.FulfillmentRecordSet;
-import com.flexnet.external.type.GeneratorRequest;
-import com.flexnet.external.type.GeneratorResponse;
-import com.flexnet.external.type.HostIdRequest;
-import com.flexnet.external.type.LicenseFileDefinitionMap;
-import com.flexnet.external.type.LicenseModelRequest;
-import com.flexnet.external.type.PingRequest;
-import com.flexnet.external.type.PingResponse;
-import com.flexnet.external.type.ProductRequest;
-import com.flexnet.external.type.Status;
-import com.flexnet.external.webservice.Diagnostics.Token;
+import com.flexnet.external.type.*;
+import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.webservice.ServiceBase;
+import com.flexnet.external.webservice.remote.*;
+
+import javax.jws.WebService;
 
 @WebService(
         endpointInterface = "com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface",
@@ -31,7 +21,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   public PingResponse ping(final PingRequest payload) throws LicGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<PingRequest, Ping, PingResponse> executor = super.createExecutor();
+    final Executor<PingRequest, Ping, PingResponse> executor = Executor.createExecutor();
     try {
       return executor
               .execute(Endpoint.ping, payload)
@@ -53,7 +43,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.LGI_validateProduct, payload).decode(Status.class);
+      return Executor.execute(Dummy.class, Endpoint.LGI_validateProduct, payload).decode(Status.class);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -68,7 +58,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.LGI_validateLicenseModel, payload).decode(Status.class);
+      return Executor.execute(Dummy.class, Endpoint.LGI_validateLicenseModel, payload).decode(Status.class);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -82,7 +72,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   public GeneratorResponse generateLicense(final GeneratorRequest payload) throws LicGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<GeneratorRequest, License, GeneratorResponse> executor = super.createExecutor();
+    final Executor<GeneratorRequest, License, GeneratorResponse> executor = Executor.createExecutor();
     try {
       return executor
               .execute(Endpoint.LGI_generateLicense, payload)
@@ -104,7 +94,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.LGI_consolidateFulfillments, payload).decode(ConsolidatedLicense.class);
+      return Executor.execute(Dummy.class, Endpoint.LGI_consolidateFulfillments, payload).decode(ConsolidatedLicense.class);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -120,7 +110,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.LGI_generateLicenseFilenames, payload).decode(LicenseFileDefinitionMap.class);
+      return Executor.execute(Dummy.class, Endpoint.LGI_generateLicenseFilenames, payload).decode(LicenseFileDefinitionMap.class);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -136,7 +126,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.LGI_generateConsolidatedLicenseFilenames, payload)
+      return Executor.execute(Dummy.class, Endpoint.LGI_generateConsolidatedLicenseFilenames, payload)
           .decode(LicenseFileDefinitionMap.class);
     }
     catch (final Throwable t) {
@@ -152,7 +142,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      return execute(Void.class, Endpoint.LGI_generateCustomHostIdentifier, payload).decode(String.class);
+      return Executor.execute(Dummy.class, Endpoint.LGI_generateCustomHostIdentifier, payload).decode(String.class);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
