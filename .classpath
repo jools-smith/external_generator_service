@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="generated"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
+	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/collection-setter-injector-1.0.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/FastInfoset.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/gmbal-api-only.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/ha-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/javax.annotation-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/javax.xml.soap-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxb-core.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxb-jxc.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxb-xjc.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxws-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxws-rt.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jaxws-tools.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/jsr181-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/management-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/mimepull.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/policy.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/resolver.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/saaj-impl.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/stax2-api.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/stax-ex.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/streambuffer.jar"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/WebContent/WEB-INF/lib/woodstox-core-asl.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/development/extgenservice/build/classes"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>
