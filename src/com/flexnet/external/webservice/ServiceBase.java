@@ -1,7 +1,7 @@
 package com.flexnet.external.webservice;
 
 import com.flexnet.external.type.SvcException;
-import com.flexnet.external.utils.ConsoleLogger;
+import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.utils.Utils;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 public abstract class ServiceBase {
 
   /** CLASS **/
-  protected final ConsoleLogger logger = new ConsoleLogger(this.getClass());
+  protected final Log logger = new Log(this.getClass());
 
   /** STATIC **/
 //  protected final static ObjectMapper mapper = new ObjectMapper()
@@ -31,14 +31,14 @@ public abstract class ServiceBase {
 
   protected final static Diagnostics diagnostics = new Diagnostics();
 //  protected final static Manager manager = new Manager();
-  protected final static ConsoleLogger rootLogger = new ConsoleLogger(ServiceBase.class);
+  protected final static Log rootLogger = new Log(ServiceBase.class);
 
   private static final Runnable diagnostics_housekeeping = () -> {
     try {
       rootLogger.yaml(diagnostics.serialize());
     }
     catch(final Throwable t) {
-      rootLogger.error(t);
+      rootLogger.exception(t);
     }
     finally {
       rootLogger.out();
@@ -53,16 +53,16 @@ public abstract class ServiceBase {
 
         final Path file = Paths.get(storage + trans.key() + ".json");
         try {
-          rootLogger.trace(file.toAbsolutePath().toString());
+          rootLogger.log(Log.Level.trace, file.toAbsolutePath().toString());
           FileUtils.writeStringToFile(file.toFile(), Utils.json_mapper_indented.writeValueAsString(trans), Charset.defaultCharset());
         }
         catch (final Exception t) {
-          rootLogger.error(t);
+          rootLogger.exception(t);
         }
       }));
     }
     catch(final Throwable t) {
-      rootLogger.error(t);
+      rootLogger.exception(t);
     }
   };
 
@@ -72,7 +72,7 @@ public abstract class ServiceBase {
   private static final Runnable context_initialized = () -> {
     rootLogger.in();
     try {
-      rootLogger.info("context_initialized");
+      rootLogger.log(Log.Level.info,"context_initialized");
       timer = new Timer();
       timer.purge();
       jobs.add(new TimerTask() {
@@ -92,7 +92,7 @@ public abstract class ServiceBase {
       timer.schedule(jobs.getLast(), 15000, 10000);
     }
     catch(final Throwable t) {
-      rootLogger.error(t);
+      rootLogger.exception(t);
     }
     finally {
       rootLogger.out();
@@ -102,14 +102,14 @@ public abstract class ServiceBase {
   private static final Runnable context_destroyed = () -> {
     rootLogger.in();
     try {
-      rootLogger.info("context_destroyed");
+      rootLogger.log(Log.Level.info,"context_destroyed");
       Optional.ofNullable(timer).ifPresent(t -> {
         t.purge();
         t.cancel();
       });
     }
     catch(final Throwable t) {
-      rootLogger.error(t);
+      rootLogger.exception(t);
     }
     finally {
       rootLogger.out();

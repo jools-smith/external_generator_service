@@ -17,18 +17,12 @@ import java.util.stream.Collectors;
  * @author juliansmith
  *
  */
-public class ConsoleLogger {
+public class Log {
   private static final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss.zzz");
   
   public enum Level {
     trace, debug, info, warning, error, severe
   }
-
-  public Level trace = Level.trace;
-  public Level debug = Level.debug;
-  public Level info = Level.info;
-  public Level warn = Level.warning;
-  public Level error = Level.error;
 
   class Context {
     final StackTraceElement element = new Throwable().getStackTrace()[3];
@@ -64,7 +58,7 @@ public class ConsoleLogger {
   
   private final Class<?> clazz;
   
-  public ConsoleLogger(final Class<?> cls) {
+  public Log(final Class<?> cls) {
     this.clazz = cls;
   }
   
@@ -87,7 +81,7 @@ public class ConsoleLogger {
       log(Level.trace, json.writeValueAsString(obj));
     }
     catch (final Throwable e) {
-      error(e);
+      exception(e);
     }
   }
   
@@ -96,32 +90,8 @@ public class ConsoleLogger {
       log(Level.trace, yaml.writeValueAsString(obj));
     }
     catch (final Throwable e) {
-      error(e);
+      exception(e);
     }
-  }
-  
-  public void trace(final String message) {
-    log(Level.trace, message);
-  }
-  
-  public void debug(final String message) {
-    log(Level.debug, message);
-  }
-  
-  public void info(final String message) {
-    log(Level.info, message);
-  }
-  
-  public void warn(final String message) {
-    log(Level.warning, message);
-  }
-  
-  public void error(final String message) {
-    log(Level.error, message);
-  }
-  
-  public void severe(final String message) {
-    log(Level.severe, message);
   }
   
   public void in() {
@@ -129,14 +99,14 @@ public class ConsoleLogger {
   }
 
   public void me(final Object self) {
-    array(Level.info, self.getClass().getSimpleName(), Integer.toHexString(self.hashCode()));
+    array(Level.trace, self.getClass().getSimpleName(), Integer.toHexString(self.hashCode()));
   }
   
   public void out() {
     log(Level.trace, "<<<");
   }
   
-  public void error(final Throwable t) {
+  public void exception(final Throwable t) {
     t.printStackTrace(System.err);
 
     final StackTraceElement frame = t.getStackTrace()[0];

@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public final class Diagnostics {
 
-  public final static ConsoleLogger logger = new ConsoleLogger(Diagnostics.class);
+  public final static Log logger = new Log(Diagnostics.class);
 
   private static Function<Duration, String> reformat = (d) -> {
     final AtomicReference<String> str = new AtomicReference<>(d.toString().replace("PT","").replace("H",":").replace("M",":").replace("S",""));
@@ -106,8 +106,7 @@ public final class Diagnostics {
   synchronized private void touch(final Token token) {
     forClass(token.clazz).touch(token);
   }
-  
-  @SuppressWarnings("serial")
+
   synchronized public Object serialize() {
     
     final Map<String, Object> obj = new LinkedHashMap<String,Object>();

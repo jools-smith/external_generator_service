@@ -2,7 +2,7 @@ package com.flexnet.external.webservice.transaction;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.flexnet.external.utils.ConsoleLogger;
+import com.flexnet.external.utils.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Transaction extends NamedEntity {
   private final static LinkedBlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
 
-  public static final ConsoleLogger logger = new ConsoleLogger(Transaction.class);
+  public static final Log logger = new Log(Transaction.class);
 
   @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public class Element extends TimedEntity {
@@ -103,7 +103,7 @@ public class Transaction extends NamedEntity {
   @JsonIgnore
   public Transaction commit() {
     transactions.add(this);
-    logger.array(logger.info, "transaction size", transactions.size());
+    logger.array(Log.Level.info, "transaction size", transactions.size());
     return this;
   }
 

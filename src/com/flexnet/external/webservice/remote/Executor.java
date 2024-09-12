@@ -2,7 +2,7 @@ package com.flexnet.external.webservice.remote;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.flexnet.external.utils.ConsoleLogger;
+import com.flexnet.external.utils.Log;
 import com.flexnet.external.webservice.transaction.Transaction;
 import org.apache.commons.io.IOUtils;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 import java.util.function.Function;
 
 public class Executor<V,T,S> {
-  private final static ConsoleLogger logger = new ConsoleLogger(Executor.class);
+  private final static Log logger = new Log(Executor.class);
 
   private final static ObjectMapper mapper = new ObjectMapper()
           .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
@@ -134,49 +134,6 @@ public class Executor<V,T,S> {
       return this;
     }
   }
-
-  /**
-   *
-   * @param clazz
-   * @param endpoint
-   * @param payload
-   * @return
-   * @param <T>
-   * @throws URISyntaxException
-   * @throws IOException
-   */
-//  public static <T> T execute(final Class<T> clazz, final EndpointType endpoint, final Object payload)
-//          throws URISyntaxException, IOException {
-//
-//    final HttpPost request = new HttpPost(new URIBuilder()
-//            .setScheme("http")
-//            .setHost("localhost")
-//            .setPort(5245)
-//            .setPath("revenera/api/1.0/process/" + endpoint.toString()).build());
-//
-//    if (payload != null) {
-//      final String content = mapper.writeValueAsString(payload);
-//
-//      final StringEntity entity = new StringEntity(content);
-//
-//      request.setEntity(entity);
-//    }
-//
-//    request.setHeader("Content-type", "application/json");
-//    request.setHeader("Accept", "application/json");
-//
-//    try (final CloseableHttpClient client = HttpClients.createDefault();) {
-//      final CloseableHttpResponse response = client.execute(request);
-//
-//      final byte[] content = IOUtils.toByteArray(response.getEntity().getContent());
-//
-//      if (response.getCode() == 200) {
-//        return mapper.readValue(content, clazz);
-//      }
-//
-//      throw new RuntimeException(String.format("code:%d %s", response.getCode(), content == null ? "" : new String(content)));
-//    }
-//  }
 
   /**
    *

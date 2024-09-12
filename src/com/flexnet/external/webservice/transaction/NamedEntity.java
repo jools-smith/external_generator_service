@@ -16,7 +16,7 @@ public abstract class NamedEntity extends TimedEntity {
    *
    * @param name
    */
-  public NamedEntity(final String name) {
+  protected NamedEntity(final String name) {
     this.name = name;
   }
 }

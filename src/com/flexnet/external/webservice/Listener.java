@@ -1,6 +1,6 @@
 package com.flexnet.external.webservice;
 
-import com.flexnet.external.utils.ConsoleLogger;
+import com.flexnet.external.utils.Log;
 import com.flexnet.external.webservice.transaction.TransactionException;
 
 import javax.servlet.ServletContextEvent;
@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Listener implements ServletContextListener {
-  private final static ConsoleLogger logger = new ConsoleLogger(ServiceBase.class);
+  private final static Log logger = new Log(ServiceBase.class);
 
   public static final AtomicReference<Listener> instance = new AtomicReference<>();
 
@@ -49,7 +49,7 @@ public class Listener implements ServletContextListener {
       });
     }
     catch (final Throwable t){
-      logger.error(t);
+      logger.exception(t);
     }
     finally {
       logger.out();
@@ -65,7 +65,7 @@ public class Listener implements ServletContextListener {
       });
     }
     catch (final Throwable t){
-      logger.error(t);
+      logger.exception(t);
     }
     finally {
       logger.out();
