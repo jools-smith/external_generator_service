@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 public abstract class ServiceBase {
@@ -23,11 +24,38 @@ public abstract class ServiceBase {
   protected final Log logger = new Log(this.getClass());
 
   /** STATIC **/
-//  protected final static ObjectMapper mapper = new ObjectMapper()
-//          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-//          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-//          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-//          .enable(SerializationFeature.INDENT_OUTPUT);
+  static AtomicBoolean go = new AtomicBoolean(true);
+  static final Thread househeeping = new Thread() {
+
+    public void run() {
+      rootLogger.in();
+      try {
+        Thread.sleep(10000L);
+        Optional.ofNullable(Listener.instance.get()).ifPresent(listener -> {
+          //      listener.registerContextInitialized(context_initialized);
+          listener.registerContextDestroyed(context_destroyed);
+          rootLogger.log(Log.Level.info,"register context destroyed");
+        });
+
+        while(go.get()) {
+
+          Thread.sleep(10000L);
+
+          diagnostics_housekeeping.run();
+
+//          transaction_housekeeping.run();
+        }
+      }
+      catch (final Throwable t) {
+        rootLogger.exception(t);
+      }
+      finally {
+        rootLogger.out();
+      }
+    }
+  };
+
+
 
   protected final static Diagnostics diagnostics = new Diagnostics();
 //  protected final static Manager manager = new Manager();
@@ -46,6 +74,7 @@ public abstract class ServiceBase {
   };
 
   static final String storage = "d:\\localhost\\extgenservice\\";
+
   private static final Runnable transaction_housekeeping = () -> {
     try {
 
@@ -66,47 +95,13 @@ public abstract class ServiceBase {
     }
   };
 
-  private static Timer timer;
-  private static final LinkedList<TimerTask> jobs = new LinkedList<>();
-
-  private static final Runnable context_initialized = () -> {
-    rootLogger.in();
-    try {
-      rootLogger.log(Log.Level.info,"context_initialized");
-      timer = new Timer();
-      timer.purge();
-      jobs.add(new TimerTask() {
-        @Override
-        public void run() {
-          diagnostics_housekeeping.run();
-        }
-      });
-      timer.schedule(jobs.getLast(), 10000, 60000);
-
-      jobs.add(new TimerTask() {
-        @Override
-        public void run() {
-          transaction_housekeeping.run();
-        }
-      });
-      timer.schedule(jobs.getLast(), 15000, 10000);
-    }
-    catch(final Throwable t) {
-      rootLogger.exception(t);
-    }
-    finally {
-      rootLogger.out();
-    }
-  };
-
   private static final Runnable context_destroyed = () -> {
     rootLogger.in();
     try {
       rootLogger.log(Log.Level.info,"context_destroyed");
-      Optional.ofNullable(timer).ifPresent(t -> {
-        t.purge();
-        t.cancel();
-      });
+      go.getAndSet(false);
+
+      househeeping.interrupt();
     }
     catch(final Throwable t) {
       rootLogger.exception(t);
@@ -116,15 +111,9 @@ public abstract class ServiceBase {
     }
   };
 
+
   static {
-//    mapper.findAndRegisterModules();
-
-    Optional.ofNullable(Listener.instance.get()).ifPresent(listener -> {
-//      listener.registerContextInitialized(context_initialized);
-      listener.registerContextDestroyed(context_destroyed);
-    });
-
-    context_initialized.run();
+    househeeping.start();
   }
 
   protected Token token() {
