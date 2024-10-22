@@ -1,21 +1,11 @@
 package com.flexnet.external.webservice;
 
-import com.flexnet.external.type.SvcException;
+import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
-import com.flexnet.external.utils.Utils;
-import com.flexnet.external.webservice.transaction.Transaction;
-import org.apache.commons.io.FileUtils;
 
-import java.nio.charset.Charset;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.Optional;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public abstract class ServiceBase {
@@ -24,41 +14,11 @@ public abstract class ServiceBase {
   protected final Log logger = new Log(this.getClass());
 
   /** STATIC **/
-  static AtomicBoolean go = new AtomicBoolean(true);
-  static final Thread househeeping = new Thread() {
 
-    public void run() {
-      rootLogger.in();
-      try {
-        Thread.sleep(10000L);
-        Optional.ofNullable(Listener.instance.get()).ifPresent(listener -> {
-          //      listener.registerContextInitialized(context_initialized);
-          listener.registerContextDestroyed(context_destroyed);
-          rootLogger.log(Log.Level.info,"register context destroyed");
-        });
-
-        while(go.get()) {
-
-          Thread.sleep(10000L);
-
-          diagnostics_housekeeping.run();
-
-//          transaction_housekeeping.run();
-        }
-      }
-      catch (final Throwable t) {
-        rootLogger.exception(t);
-      }
-      finally {
-        rootLogger.out();
-      }
-    }
-  };
-
-
+  protected final ImplementorFactory factory = new ImplementorFactory();
 
   protected final static Diagnostics diagnostics = new Diagnostics();
-//  protected final static Manager manager = new Manager();
+
   protected final static Log rootLogger = new Log(ServiceBase.class);
 
   private static final Runnable diagnostics_housekeeping = () -> {
@@ -73,48 +33,54 @@ public abstract class ServiceBase {
     }
   };
 
-  static final String storage = "d:\\localhost\\extgenservice\\";
+  protected String getLicenseTechnology(final Object obj) {
+    final AtomicReference<LicenseTechnology> tech = new AtomicReference<>();
 
-  private static final Runnable transaction_housekeeping = () -> {
-    try {
 
-      Optional.ofNullable(Transaction.removeAll()).ifPresent(list -> list.forEach(trans -> {
 
-        final Path file = Paths.get(storage + trans.key() + ".json");
-        try {
-          rootLogger.log(Log.Level.trace, file.toAbsolutePath().toString());
-          FileUtils.writeStringToFile(file.toFile(), Utils.json_mapper_indented.writeValueAsString(trans), Charset.defaultCharset());
-        }
-        catch (final Exception t) {
-          rootLogger.exception(t);
-        }
-      }));
+    if (obj instanceof ProductRequest) {
+      tech.set(((ProductRequest) obj).getLicenseTechnology());
     }
-    catch(final Throwable t) {
-      rootLogger.exception(t);
+    else if (obj instanceof LicenseModelRequest) {
+      tech.set(((LicenseModelRequest) obj).getLicenseTechnology());
     }
-  };
-
-  private static final Runnable context_destroyed = () -> {
-    rootLogger.in();
-    try {
-      rootLogger.log(Log.Level.info,"context_destroyed");
-      go.getAndSet(false);
-
-      househeeping.interrupt();
+    else if (obj instanceof GeneratorRequest) {
+      tech.set(((GeneratorRequest) obj).getLicenseTechnology());
     }
-    catch(final Throwable t) {
-      rootLogger.exception(t);
+    else if (obj instanceof ConsolidatedLicenseResquest) {
+      ((ConsolidatedLicenseResquest) obj).getFulfillments().stream().findFirst().ifPresent(x -> {
+        tech.set(x.getLicenseTechnology());
+      });
     }
-    finally {
-      rootLogger.out();
+    else if (obj instanceof FulfillmentRecordSet) {
+      ((FulfillmentRecordSet) obj).getFulfillments().stream().findFirst().ifPresent(x -> {
+        tech.set(x.getLicenseTechnology());
+      });
     }
-  };
+    else if (obj instanceof RenewableEntitlementLineItems) {
+      ((RenewableEntitlementLineItems) obj).getRenewableEntitlementLineItems().stream().findFirst().ifPresent(x -> {
+        tech.set(x.getLicenseTechnology());
+      });
+    }
+    else if (obj instanceof EntitlementLineItem) {
+      tech.set(((EntitlementLineItem) obj).getLicenseTechnology());
+    }
+    else if (obj instanceof FulfillmentRecord) {
+      tech.set(((FulfillmentRecord) obj).getLicenseTechnology());
+    }
+    else if (obj instanceof ConsolidatedLicenseRecord) {
+      tech.set(((ConsolidatedLicenseRecord) obj).getLicenseTechnology());
+    }
 
 
-  static {
-    househeeping.start();
+    if (tech.get() != null) {
+      logger.log(Log.Level.info, "license tech:" + tech.get().getName());
+      return tech.get().getName();
+    }
+
+    throw new RuntimeException(obj.getClass().getName() + " | cannot retrieve license technology");
   }
+
 
   protected Token token() {
     final StackTraceElement frame = Thread.currentThread().getStackTrace()[2];

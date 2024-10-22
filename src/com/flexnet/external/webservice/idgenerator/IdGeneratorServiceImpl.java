@@ -2,11 +2,10 @@ package com.flexnet.external.webservice.idgenerator;
 
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.webservice.DefaultIdGenerator;
+import com.flexnet.external.webservice.ImplementorFactory;
 import com.flexnet.external.webservice.ServiceBase;
-import com.flexnet.external.webservice.remote.EndpointType;
-import com.flexnet.external.webservice.remote.Executor;
-import com.flexnet.external.webservice.remote.Identifier;
-import com.flexnet.external.webservice.remote.Ping;
+import com.flexnet.external.webservice.renewal.RenewalServiceInterface;
 
 import javax.jws.WebService;
 
@@ -23,19 +22,14 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public PingResponse ping(final PingRequest payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<PingRequest, Ping, PingResponse> executor = Executor.createExecutor();
+
     try {
-      return executor
-              .execute(EndpointType.ping, payload)
-              .decode(Ping.class)
-              .encode(Ping.encode)
-              .value();
+      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).ping(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
       token.commit();
     }
   }
@@ -44,19 +38,15 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateEntitlementID(final Entitlement payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<Entitlement, Identifier, Id> executor = Executor.createExecutor();
+
     try {
-      return executor
-              .execute(EndpointType.IGI_generateEntitlementID, payload)
-              .decode(Identifier.class)
-              .encode(Identifier.encode)
-              .value();
+      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).generateEntitlementID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
+
       token.commit();
     }
   }
@@ -65,19 +55,15 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateLineItemID(final EntitlementLineItem payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<EntitlementLineItem, Identifier, Id> executor = Executor.createExecutor();
     try {
-      return executor
-              .execute(EndpointType.IGI_generateLineItemID, payload)
-              .decode(Identifier.class)
-              .encode(Identifier.encode)
-              .value();
+      final String tech = super.getLicenseTechnology(payload);
+
+      return super.factory.getImplementor(tech, IdGeneratorServiceInterface.class).generateLineItemID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
       token.commit();
     }
   }
@@ -86,19 +72,13 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateWebRegKey(final BulkEntitlement payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<BulkEntitlement, Identifier, Id> executor = Executor.createExecutor();
     try {
-      return executor
-              .execute(EndpointType.IGI_generateWebRegKey, payload)
-              .decode(Identifier.class)
-              .encode(Identifier.encode)
-              .value();
+      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).generateWebRegKey(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
       token.commit();
     }
   }
@@ -107,19 +87,13 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateMaintenanceItemID(final MaintenanceItem payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<MaintenanceItem, Identifier, Id> executor = Executor.createExecutor();
     try {
-      return executor
-              .execute(EndpointType.IGI_generateMaintenanceItemID, payload)
-              .decode(Identifier.class)
-              .encode(Identifier.encode)
-              .value();
+      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).generateMaintenanceItemID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
       token.commit();
     }
   }
@@ -128,19 +102,15 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateFulfillmentID(final FulfillmentRecord payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<FulfillmentRecord, Identifier, Id> executor = Executor.createExecutor();
     try {
-      return executor
-              .execute(EndpointType.IGI_generateFulfillmentID, payload)
-              .decode(Identifier.class)
-              .encode(Identifier.encode)
-              .value();
+      final String tech = super.getLicenseTechnology(payload);
+
+      return super.factory.getImplementor(tech, IdGeneratorServiceInterface.class).generateFulfillmentID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
       token.commit();
     }
   }
@@ -149,19 +119,15 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateConsolidatedLicenseID(final ConsolidatedLicenseRecord payload) throws IdGeneratorException {
     super.logger.in();
     final Token token = token();
-    final Executor<ConsolidatedLicenseRecord, Identifier, Id> executor = Executor.createExecutor();
     try {
-      return executor
-              .execute(EndpointType.IGI_generateConsolidatedLicenseID, payload)
-              .decode(Identifier.class)
-              .encode(Identifier.encode)
-              .value();
+      final String tech = super.getLicenseTechnology(payload);
+
+      return super.factory.getImplementor(tech, IdGeneratorServiceInterface.class).generateConsolidatedLicenseID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
       token.commit();
     }
   }

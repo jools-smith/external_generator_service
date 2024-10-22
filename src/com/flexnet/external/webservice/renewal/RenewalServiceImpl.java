@@ -1,16 +1,10 @@
 
 package com.flexnet.external.webservice.renewal;
 
-import com.flexnet.external.type.PingRequest;
-import com.flexnet.external.type.PingResponse;
-import com.flexnet.external.type.RenewableEntitlementLineItems;
-import com.flexnet.external.type.RenewalResponse;
+import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.webservice.DefaultRenewalService;
 import com.flexnet.external.webservice.ServiceBase;
-import com.flexnet.external.webservice.remote.UnknownReply;
-import com.flexnet.external.webservice.remote.EndpointType;
-import com.flexnet.external.webservice.remote.Executor;
-import com.flexnet.external.webservice.remote.Ping;
 
 import javax.jws.WebService;
 
@@ -19,7 +13,9 @@ import javax.jws.WebService;
         wsdlLocation = "WEB-INF/wsdl/schema/RenewalService.wsdl")
 
 public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInterface {
-  
+
+  static RenewalServiceInterface implementor = new DefaultRenewalService();
+
   public RenewalServiceImpl() {
     super.logger.me(this);
   }
@@ -28,19 +24,15 @@ public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInt
   public PingResponse ping(final PingRequest payload) throws RenewalSeviceException {
     super.logger.in();
     final Token token = token();
-    final Executor<PingRequest, Ping, PingResponse> executor = Executor.createExecutor();
+
     try {
-      return executor
-              .execute(EndpointType.ping, payload)
-              .decode(Ping.class)
-              .encode(Ping.encode)
-              .value();
+      return implementor.ping(payload);
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
+
       token.commit();
     }
   }
@@ -49,19 +41,17 @@ public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInt
   public RenewalResponse request(final RenewableEntitlementLineItems payload) throws RenewalSeviceException {
     super.logger.in();
     final Token token = token();
-    final Executor<RenewableEntitlementLineItems, UnknownReply, RenewalResponse> executor = Executor.createExecutor();
+
     try {
-      return executor
-              .execute(EndpointType.RSI_request, payload)
-              .decode(UnknownReply.class)
-              .encode((v) -> new RenewalResponse())
-              .value();
+      final String tech = super.getLicenseTechnology(payload);
+
+      return super.factory.getImplementor(tech, RenewalServiceInterface.class).request(payload);
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
+
       token.commit();
     }
   }
