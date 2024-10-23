@@ -27,19 +27,19 @@ public class Log {
   class Context {
     final StackTraceElement element = new Throwable().getStackTrace()[3];
     final Calendar calendar = GregorianCalendar.getInstance();
-    
+
     String getTime() {
       return df.format(this.calendar.getTime());
     }
-    
+
     String getPackage() {
       return this.element.getClassName();
     }
-    
+
     String getMethod() {
       return this.element.getMethodName();
     }
-    
+
     int getLine() {
       return this.element.getLineNumber();
     }
@@ -58,7 +58,7 @@ public class Log {
   
   private final Class<?> clazz;
   
-  public Log(final Class<?> cls) {
+  private Log(final Class<?> cls) {
     this.clazz = cls;
   }
   
@@ -123,5 +123,9 @@ public class Log {
   public void array(final Level level, final Object... params) {
 
     log(level, Arrays.stream(params).map(Object::toString).collect(Collectors.joining(" | ")));
+  }
+
+  public static Log create(final Class<?> type) {
+    return new Log(type);
   }
 }

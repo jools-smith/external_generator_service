@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public final class Diagnostics {
 
-  public final static Log logger = new Log(Diagnostics.class);
+  public final static Log logger = Log.create(Diagnostics.class);
 
   private static Function<Duration, String> reformat = (d) -> {
     final AtomicReference<String> str = new AtomicReference<>(d.toString().replace("PT","").replace("H",":").replace("M",":").replace("S",""));

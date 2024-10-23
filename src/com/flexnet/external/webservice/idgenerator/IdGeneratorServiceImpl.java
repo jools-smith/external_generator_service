@@ -2,10 +2,7 @@ package com.flexnet.external.webservice.idgenerator;
 
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
-import com.flexnet.external.webservice.DefaultIdGenerator;
-import com.flexnet.external.webservice.ImplementorFactory;
 import com.flexnet.external.webservice.ServiceBase;
-import com.flexnet.external.webservice.renewal.RenewalServiceInterface;
 
 import javax.jws.WebService;
 
@@ -24,7 +21,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Token token = token();
 
     try {
-      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).ping(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).ping(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -40,7 +37,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     final Token token = token();
 
     try {
-      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).generateEntitlementID(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).generateEntitlementID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -56,9 +53,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     super.logger.in();
     final Token token = token();
     try {
-      final String tech = super.getLicenseTechnology(payload);
-
-      return super.factory.getImplementor(tech, IdGeneratorServiceInterface.class).generateLineItemID(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).generateLineItemID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -73,7 +68,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     super.logger.in();
     final Token token = token();
     try {
-      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).generateWebRegKey(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).generateWebRegKey(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -88,7 +83,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     super.logger.in();
     final Token token = token();
     try {
-      return super.factory.getImplementor("DEF", IdGeneratorServiceInterface.class).generateMaintenanceItemID(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).generateMaintenanceItemID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -103,9 +98,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     super.logger.in();
     final Token token = token();
     try {
-      final String tech = super.getLicenseTechnology(payload);
-
-      return super.factory.getImplementor(tech, IdGeneratorServiceInterface.class).generateFulfillmentID(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).generateFulfillmentID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -120,9 +113,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
     super.logger.in();
     final Token token = token();
     try {
-      final String tech = super.getLicenseTechnology(payload);
-
-      return super.factory.getImplementor(tech, IdGeneratorServiceInterface.class).generateConsolidatedLicenseID(payload);
+      return super.factory.getDefaultImplementor(IdGeneratorServiceInterface.class).generateConsolidatedLicenseID(payload);
     }
     catch (final Throwable t) {
       throw new IdGeneratorException(t.getMessage(), this.serviceException.apply(t));

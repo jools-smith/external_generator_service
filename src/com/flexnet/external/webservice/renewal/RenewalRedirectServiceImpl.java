@@ -1,8 +1,10 @@
 package com.flexnet.external.webservice.renewal;
 
-import com.flexnet.external.type.*;
+import com.flexnet.external.type.PingRequest;
+import com.flexnet.external.type.PingResponse;
+import com.flexnet.external.type.RenewableEntitlementLineItems;
+import com.flexnet.external.type.RenewalResponse;
 import com.flexnet.external.utils.Diagnostics.Token;
-import com.flexnet.external.webservice.DefaultRenewalService;
 import com.flexnet.external.webservice.ServiceBase;
 
 import javax.jws.WebService;
@@ -11,8 +13,6 @@ import javax.jws.WebService;
         endpointInterface = "com.flexnet.external.webservice.renewal.RenewalServiceInterface",
         wsdlLocation = "WEB-INF/wsdl/schema/RenewalService.wsdl")
 public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalServiceInterface {
-
-  static RenewalServiceInterface implementor = new DefaultRenewalService();
 
   public RenewalRedirectServiceImpl() {
 
@@ -25,7 +25,7 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
     final Token token = token();
 
     try {
-      return implementor.ping(payload);
+      return super.factory.getDefaultImplementor(RenewalServiceInterface.class).ping(payload);
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));

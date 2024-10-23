@@ -1,16 +1,21 @@
-package com.flexnet.external.webservice;
+package com.flexnet.external.webservice.implementor;
 
 import com.flexnet.external.type.PingRequest;
 import com.flexnet.external.type.PingResponse;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
+import com.flexnet.external.webservice.ServiceBase;
 
 import java.time.Instant;
 import java.util.UUID;
 
 public abstract class ImplementorBase {
+
+  static final String build = "0003";
+  static final String version = "2024.10.22";
+
   /** CLASS **/
-  protected final Log logger = new Log(this.getClass());
+  protected final Log logger = Log.create(this.getClass());
   
   protected String serialize(final Object payload) {
     try {
@@ -28,8 +33,8 @@ public abstract class ImplementorBase {
   protected PingResponse ping(final PingRequest request) {
     return new PingResponse() {
       {
-        this.info = "TBD";
-        this.str = request.getStr();
+        this.info = serialize(ServiceBase.diagnostics.serialize());
+        this.str = String.format("version | %s | %s", version, build);
         this.processedTime = Instant.now().toString();
       }
     };

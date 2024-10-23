@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Transaction extends NamedEntity {
   private final static LinkedBlockingQueue<Transaction> transactions = new LinkedBlockingQueue<>();
 
-  public static final Log logger = new Log(Transaction.class);
+  public static final Log logger = Log.create(Transaction.class);
 
   @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   public class Element extends TimedEntity {

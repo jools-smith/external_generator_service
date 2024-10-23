@@ -4,7 +4,6 @@ import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.webservice.ServiceBase;
 
-
 import javax.jws.WebService;
 
 @WebService(
@@ -31,9 +30,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.in();
     final Token token = token();
     try {
-      final String tech = super.getLicenseTechnology(payload);
-
-      return super.factory.getImplementor(tech, LicenseGeneratorServiceInterface.class).ping(payload);
+      return super.factory.getDefaultImplementor(LicenseGeneratorServiceInterface.class).ping(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -200,7 +197,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     final Token token = token();
 
     try {
-      return super.factory.getImplementor("DEF", LicenseGeneratorServiceInterface.class).generateCustomHostIdentifier(payload);
+      return super.factory.getDefaultImplementor(LicenseGeneratorServiceInterface.class).generateCustomHostIdentifier(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));

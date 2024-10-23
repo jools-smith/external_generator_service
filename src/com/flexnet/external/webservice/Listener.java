@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Listener implements ServletContextListener {
-  private final static Log logger = new Log(ServiceBase.class);
+  private final static Log logger = Log.create(ServiceBase.class);
 
   public static final AtomicReference<Listener> instance = new AtomicReference<>();
 

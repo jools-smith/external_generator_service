@@ -4,6 +4,7 @@ import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.webservice.implementor.ImplementorFactory;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -11,15 +12,15 @@ import java.util.function.Function;
 public abstract class ServiceBase {
 
   /** CLASS **/
-  protected final Log logger = new Log(this.getClass());
+  protected final Log logger = Log.create(this.getClass());
 
   /** STATIC **/
 
   protected final ImplementorFactory factory = new ImplementorFactory();
 
-  protected final static Diagnostics diagnostics = new Diagnostics();
+  public final static Diagnostics diagnostics = new Diagnostics();
 
-  protected final static Log rootLogger = new Log(ServiceBase.class);
+  protected final static Log rootLogger = Log.create(ServiceBase.class);
 
   private static final Runnable diagnostics_housekeeping = () -> {
     try {
@@ -35,8 +36,6 @@ public abstract class ServiceBase {
 
   protected String getLicenseTechnology(final Object obj) {
     final AtomicReference<LicenseTechnology> tech = new AtomicReference<>();
-
-
 
     if (obj instanceof ProductRequest) {
       tech.set(((ProductRequest) obj).getLicenseTechnology());
