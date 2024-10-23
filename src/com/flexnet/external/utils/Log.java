@@ -32,7 +32,8 @@ public class Log {
       return df.format(this.calendar.getTime());
     }
 
-    String getPackage() {
+    String getClassName() {
+
       return this.element.getClassName();
     }
 
@@ -56,21 +57,22 @@ public class Log {
       .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
       .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   
-  private final Class<?> clazz;
+  private final Class<?> type;
   
   private Log(final Class<?> cls) {
-    this.clazz = cls;
+    this.type = cls;
   }
-  
+
+
   public void log(final Level level, final String message) {
     final Context context = new Context();
-    
-    System.out.printf("%s %s [%s] {%s} %s.%s(%d) %s\n", 
+
+    System.out.printf("%s %s [%s] {%s} %s.%s(%d) %s\n",
         context.getTime(), 
         level.toString().toUpperCase(),
-        Thread.currentThread().getName(), 
-        this.clazz.getSimpleName(), 
-        context.getPackage(), 
+        Thread.currentThread().getName(),
+        type.getSimpleName(),
+        Utils.abbreviatePackageName(context.getClassName(), 30),
         context.getMethod(),
         context.getLine(), 
         message);

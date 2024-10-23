@@ -16,6 +16,26 @@ public class Utils {
     };
   };
 
+  public static String abbreviatePackageName(final String name, final int limit) {
+
+    String str = name;
+
+    if (str.length() > limit) {
+      final String[] parts = name.split("\\.");
+
+      for (int i = 0; i < parts.length; i++) {
+        parts[i] = parts[i].substring(0, 1);
+
+        str = String.join(".", parts);
+        if (str.length() <= limit) {
+          break;
+        }
+      }
+    }
+
+    return str;
+  }
+
   public static final  ObjectMapper json_mapper_indented = new ObjectMapper()
           .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
           .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)

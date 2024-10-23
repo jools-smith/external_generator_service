@@ -57,7 +57,7 @@ public class ImplementorFactory {
   public <T> T getImplementor(final String technology, final Class<T> type) {
     logger.array(Log.Level.info, "requested type", technology, type.getSimpleName());
 
-    final AtomicReference<T> implementor = new AtomicReference<>(getDefaultImplementor(type));
+    final AtomicReference<T> implementor = new AtomicReference<>();
 
     implementors.stream().filter(x -> x.getLeft().equals(technology)).filter(x -> x.getMiddle() == type).findAny().ifPresent(x -> {
       logger.array(Log.Level.debug, "found type", x.getRight().getClass().getSimpleName());
@@ -65,6 +65,6 @@ public class ImplementorFactory {
       implementor.set( type.cast( x.getRight() ) );
     });
 
-    return implementor.get();
+    return implementor.get() != null ? implementor.get() : getDefaultImplementor(type);
   }
 }
