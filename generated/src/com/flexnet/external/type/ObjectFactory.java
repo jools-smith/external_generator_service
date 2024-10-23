@@ -40,13 +40,13 @@ public class ObjectFactory {
     private final static QName _EntitlementLineItem_QNAME = new QName("urn:com.flexnet.external.type", "EntitlementLineItem");
     private final static QName _Status_QNAME = new QName("urn:com.flexnet.external.type", "Status");
     private final static QName _LicenseFileDefinitionMap_QNAME = new QName("urn:com.flexnet.external.type", "LicenseFileDefinitionMap");
-    private final static QName _SuiteProductInfoPackageVersion_QNAME = new QName("urn:com.flexnet.external.type", "packageVersion");
-    private final static QName _SuiteProductInfoIsDateBasedPackageVersion_QNAME = new QName("urn:com.flexnet.external.type", "isDateBasedPackageVersion");
-    private final static QName _SuiteProductInfoPackageName_QNAME = new QName("urn:com.flexnet.external.type", "packageName");
-    private final static QName _SuiteProductInfoPackageVersionFormat_QNAME = new QName("urn:com.flexnet.external.type", "packageVersionFormat");
     private final static QName _ProductProductCategory_QNAME = new QName("urn:com.flexnet.external.type", "productCategory");
     private final static QName _ProductHeader_QNAME = new QName("urn:com.flexnet.external.type", "header");
+    private final static QName _ProductPackageVersion_QNAME = new QName("urn:com.flexnet.external.type", "packageVersion");
+    private final static QName _ProductIsDateBasedPackageVersion_QNAME = new QName("urn:com.flexnet.external.type", "isDateBasedPackageVersion");
+    private final static QName _ProductPackageName_QNAME = new QName("urn:com.flexnet.external.type", "packageName");
     private final static QName _ProductTrailer_QNAME = new QName("urn:com.flexnet.external.type", "trailer");
+    private final static QName _SuiteProductInfoPackageVersionFormat_QNAME = new QName("urn:com.flexnet.external.type", "packageVersionFormat");
     private final static QName _ProductRequestHeaderResourceBundleKey_QNAME = new QName("urn:com.flexnet.external.type", "headerResourceBundleKey");
     private final static QName _ProductRequestTrailerResourceBundleKey_QNAME = new QName("urn:com.flexnet.external.type", "trailerResourceBundleKey");
 
@@ -698,42 +698,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersion", scope = SuiteProductInfo.class)
-    public JAXBElement<String> createSuiteProductInfoPackageVersion(String value) {
-        return new JAXBElement<String>(_SuiteProductInfoPackageVersion_QNAME, String.class, SuiteProductInfo.class, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link Boolean }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "isDateBasedPackageVersion", scope = SuiteProductInfo.class)
-    public JAXBElement<Boolean> createSuiteProductInfoIsDateBasedPackageVersion(Boolean value) {
-        return new JAXBElement<Boolean>(_SuiteProductInfoIsDateBasedPackageVersion_QNAME, Boolean.class, SuiteProductInfo.class, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageName", scope = SuiteProductInfo.class)
-    public JAXBElement<String> createSuiteProductInfoPackageName(String value) {
-        return new JAXBElement<String>(_SuiteProductInfoPackageName_QNAME, String.class, SuiteProductInfo.class, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersionFormat", scope = SuiteProductInfo.class)
-    public JAXBElement<String> createSuiteProductInfoPackageVersionFormat(String value) {
-        return new JAXBElement<String>(_SuiteProductInfoPackageVersionFormat_QNAME, String.class, SuiteProductInfo.class, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ProductCategory }{@code >}}
      * 
      */
@@ -757,7 +721,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersion", scope = Product.class)
     public JAXBElement<String> createProductPackageVersion(String value) {
-        return new JAXBElement<String>(_SuiteProductInfoPackageVersion_QNAME, String.class, Product.class, value);
+        return new JAXBElement<String>(_ProductPackageVersion_QNAME, String.class, Product.class, value);
     }
 
     /**
@@ -766,7 +730,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "isDateBasedPackageVersion", scope = Product.class)
     public JAXBElement<Boolean> createProductIsDateBasedPackageVersion(Boolean value) {
-        return new JAXBElement<Boolean>(_SuiteProductInfoIsDateBasedPackageVersion_QNAME, Boolean.class, Product.class, value);
+        return new JAXBElement<Boolean>(_ProductIsDateBasedPackageVersion_QNAME, Boolean.class, Product.class, value);
     }
 
     /**
@@ -775,7 +739,7 @@ public class ObjectFactory {
      */
     @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageName", scope = Product.class)
     public JAXBElement<String> createProductPackageName(String value) {
-        return new JAXBElement<String>(_SuiteProductInfoPackageName_QNAME, String.class, Product.class, value);
+        return new JAXBElement<String>(_ProductPackageName_QNAME, String.class, Product.class, value);
     }
 
     /**
@@ -785,6 +749,42 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "trailer", scope = Product.class)
     public JAXBElement<String> createProductTrailer(String value) {
         return new JAXBElement<String>(_ProductTrailer_QNAME, String.class, Product.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersion", scope = SuiteProductInfo.class)
+    public JAXBElement<String> createSuiteProductInfoPackageVersion(String value) {
+        return new JAXBElement<String>(_ProductPackageVersion_QNAME, String.class, SuiteProductInfo.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link Boolean }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "isDateBasedPackageVersion", scope = SuiteProductInfo.class)
+    public JAXBElement<Boolean> createSuiteProductInfoIsDateBasedPackageVersion(Boolean value) {
+        return new JAXBElement<Boolean>(_ProductIsDateBasedPackageVersion_QNAME, Boolean.class, SuiteProductInfo.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageName", scope = SuiteProductInfo.class)
+    public JAXBElement<String> createSuiteProductInfoPackageName(String value) {
+        return new JAXBElement<String>(_ProductPackageName_QNAME, String.class, SuiteProductInfo.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersionFormat", scope = SuiteProductInfo.class)
+    public JAXBElement<String> createSuiteProductInfoPackageVersionFormat(String value) {
+        return new JAXBElement<String>(_SuiteProductInfoPackageVersionFormat_QNAME, String.class, SuiteProductInfo.class, value);
     }
 
     /**

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public abstract class ImplementorBase {
 
-  static final String build = "0003";
+  static final String build = "0006";
   static final String version = "2024.10.22";
 
   /** CLASS **/
@@ -38,5 +38,9 @@ public abstract class ImplementorBase {
         this.processedTime = Instant.now().toString();
       }
     };
+  }
+
+  public String technologyName() {
+    return ImplementorFactory.default_technology_name;
   }
 }

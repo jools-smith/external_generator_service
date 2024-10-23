@@ -7,6 +7,7 @@ import com.flexnet.external.webservice.renewal.RenewalSeviceException;
 
 public final class DefaultRenewalService extends ImplementorBase implements RenewalServiceInterface {
   private final static Log logger = Log.create(DefaultRenewalService.class);
+
   @Override
   public PingResponse ping(final PingRequest request) {
     logger.in();

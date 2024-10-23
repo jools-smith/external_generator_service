@@ -12,17 +12,30 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ImplementorFactory {
   private final static Log logger = Log.create(ImplementorFactory.class);
 
-  public final static String DEF = "DEF";
+  public final static String default_technology_name = "DEF";
 
-  private final List<Triple<String, Class<?>, ?>> implementors = new ArrayList<>();
+  private final List<Triple<String, Class<?>, ImplementorBase>> implementors = new ArrayList<>();
+
+  private void addImplementor(final Class<?> type, final ImplementorBase imp) {
+    if (type.isAssignableFrom(imp.getClass())) {
+      this.implementors.add(Triple.of(imp.technologyName(), type, imp));
+    }
+    else {
+      throw new RuntimeException(imp.getClass().getSimpleName() + " does not implement " + type.getSimpleName());
+    }
+  }
 
   public ImplementorFactory() {
     logger.in();
     try {
-      /* add specific technology implementors */
-      this.implementors.add(Triple.of(DEF, IdGeneratorServiceInterface.class, new DefaultIdGenerator()));
-      this.implementors.add(Triple.of(DEF, LicenseGeneratorServiceInterface.class, new DefaultLicenseGenerator()));
-      this.implementors.add(Triple.of(DEF, RenewalServiceInterface.class, new DefaultRenewalService()));
+      /* add default technology implementors */
+      addImplementor(IdGeneratorServiceInterface.class, new DefaultIdGenerator());
+      addImplementor(LicenseGeneratorServiceInterface.class, new DefaultLicenseGenerator());
+      addImplementor(RenewalServiceInterface.class, new DefaultRenewalService());
+
+      /* LMX */
+      /* don't deploy yet */
+//      addImplementor(LicenseGeneratorServiceInterface.class, new LmxLicenseGenerator());
     }
     catch (final Throwable t) {
       logger.exception(t);
@@ -34,7 +47,7 @@ public class ImplementorFactory {
     logger.array(Log.Level.info, "requested type", type.getSimpleName());
 
     return type.cast(implementors.stream()
-            .filter(x -> x.getLeft().equals(DEF))
+            .filter(x -> x.getLeft().equals(default_technology_name))
             .filter(x -> x.getMiddle() == type)
             .findAny()
             .get()
