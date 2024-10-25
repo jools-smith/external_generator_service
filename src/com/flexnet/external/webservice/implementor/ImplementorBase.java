@@ -12,6 +12,7 @@ import java.util.UUID;
 public abstract class ImplementorBase {
 
   static final String build = "0013";
+
   static final String version = "2024.10.25";
 
   /** CLASS **/
