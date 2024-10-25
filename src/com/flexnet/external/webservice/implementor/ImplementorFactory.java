@@ -6,7 +6,8 @@ import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInter
 import com.flexnet.external.webservice.renewal.RenewalServiceInterface;
 import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ImplementorFactory {

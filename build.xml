@@ -13,7 +13,7 @@
     <property name="generated" location="${BASE}/generated"/>
     <property name="generated-src" location="${BASE}/generated/src"/>
     <property name="schema-loc" location="${BASE}/schema"/>
-    <property name="warfile" location="${BASE}/../flexnet-licgen.war"/>
+    <property name="warfile" location="${BASE}/../revenera-services.war"/>
     <property name="zipped-sources" location="${BASE}/../extgenservice.zip"/>
 
     <path id="licservice.classpath">

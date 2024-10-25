@@ -154,7 +154,6 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-
       token.commit();
     }
   }
@@ -180,7 +179,6 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-
       token.commit();
     }
   }
@@ -203,7 +201,6 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-
       token.commit();
     }
   }

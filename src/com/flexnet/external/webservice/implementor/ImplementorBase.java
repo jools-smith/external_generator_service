@@ -11,8 +11,8 @@ import java.util.UUID;
 
 public abstract class ImplementorBase {
 
-  static final String build = "0011";
-  static final String version = "2024.10.22";
+  static final String build = "0013";
+  static final String version = "2024.10.25";
 
   /** CLASS **/
   protected final Log logger = Log.create(this.getClass());
