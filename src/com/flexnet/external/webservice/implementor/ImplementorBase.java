@@ -11,37 +11,24 @@ import java.util.UUID;
 
 public abstract class ImplementorBase {
 
-  static final String build = "0013";
-
-  static final String version = "2024.10.25";
-
-  /** CLASS **/
   protected final Log logger = Log.create(this.getClass());
-  
-  protected String serialize(final Object payload) {
-    try {
-      return Utils.json_mapper.writeValueAsString(payload);
-    }
-    catch (final Throwable t) {
-      throw new RuntimeException(t);
-    }
-  }
 
   protected String id() {
-    return String.join("-", UUID.randomUUID().toString().replace("-","").split("(?<=\\G.{4})"));
+    return String.join("-", UUID
+            .randomUUID()
+            .toString().replace("-","")
+            .split("(?<=\\G.{4})"));
   }
 
   protected PingResponse ping(final PingRequest request) {
     return new PingResponse() {
       {
-        this.info = serialize(ServiceBase.diagnostics.serialize());
-        this.str = String.format("version | %s | %s", version, build);
+        this.info = Utils.safeSerialize(ServiceBase.getDiagnostics().serialize());
+        this.str = String.format("version | %s", ServiceBase.getVersionBuild());
         this.processedTime = Instant.now().toString();
       }
     };
   }
 
-  public String technologyName() {
-    return ImplementorFactory.default_technology_name;
-  }
+  public abstract String technologyName();
 }

@@ -2,6 +2,7 @@ package com.flexnet.external.webservice.implementor;
 
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Log;
+import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.renewal.RenewalServiceInterface;
 import com.flexnet.external.webservice.renewal.RenewalSeviceException;
 
@@ -15,11 +16,16 @@ public final class DefaultRenewalService extends ImplementorBase implements Rene
   }
 
   @Override
+  public String technologyName() {
+    return ImplementorFactory.default_technology_name;
+  }
+
+  @Override
   public RenewalResponse request(final RenewableEntitlementLineItems renewableEntitlementLineItems) throws RenewalSeviceException {
     logger.in();
     return new RenewalResponse() {
       {
-        this.redirectUrl = DefaultRenewalService.super.serialize(renewableEntitlementLineItems);
+        this.redirectUrl = Utils.safeSerialize(renewableEntitlementLineItems);
         this.status = RenewalStatus.SUCCESS;
       }
     };

@@ -15,6 +15,11 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
   }
 
   @Override
+  public String technologyName() {
+    return ImplementorFactory.default_technology_name;
+  }
+
+  @Override
   public Id generateEntitlementID(final Entitlement entitlement) throws IdGeneratorException {
     logger.in();
     return new Id() {

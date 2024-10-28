@@ -2,11 +2,12 @@ package com.flexnet.external.webservice.implementor;
 
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Log;
+import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.ServiceBase;
 import com.flexnet.external.webservice.keygenerator.LicGeneratorException;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public final class DefaultLicenseGenerator extends ImplementorBase implements LicenseGeneratorServiceInterface {
   private final static Log logger = Log.create(DefaultLicenseGenerator.class);
@@ -18,11 +19,16 @@ public final class DefaultLicenseGenerator extends ImplementorBase implements Li
   }
 
   @Override
+  public String technologyName() {
+    return ImplementorFactory.default_technology_name;
+  }
+
+  @Override
   public Status validateProduct(final ProductRequest product) {
     logger.in();
     return new Status() {
       {
-        this.message = DefaultLicenseGenerator.super.serialize(product);
+        this.message = Utils.safeSerialize(product);
         this.code = 0;
       }
     };
@@ -33,7 +39,7 @@ public final class DefaultLicenseGenerator extends ImplementorBase implements Li
     logger.in();
     return new Status() {
       {
-        this.message = DefaultLicenseGenerator.super.serialize(model);
+        this.message = Utils.safeSerialize(model);
         this.code = 0;
       }
     };
@@ -46,8 +52,19 @@ public final class DefaultLicenseGenerator extends ImplementorBase implements Li
       {
         this.complete = true;
         this.licenseFileName = "license";
-        this.licenseText = DefaultLicenseGenerator.super.serialize(request);
-        this.message = DefaultLicenseGenerator.super.serialize(ServiceBase.diagnostics.serialize());
+        this.licenseText = Base64.getEncoder().encodeToString(Utils.safeSerialize(request).getBytes());
+        this.message = Base64.getEncoder().encodeToString(Utils.safeSerialize(ServiceBase.getDiagnostics().serialize()).getBytes());
+
+        licenseFiles = new ArrayList<LicenseFileMapItem>() {
+          {
+            add(new LicenseFileMapItem() {
+              {
+                this.name = licenseFileName;
+                this.value = licenseText;
+              }
+            });
+          }
+        };
       }
     };
   }
@@ -58,7 +75,7 @@ public final class DefaultLicenseGenerator extends ImplementorBase implements Li
     return new ConsolidatedLicense() {
       {
         this.licenseFileName = "license";
-        this.licenseText = DefaultLicenseGenerator.super.serialize(fulfillmentRecordset);
+        this.licenseText = Utils.safeSerialize(fulfillmentRecordset);
       }
     };
   }
@@ -86,6 +103,6 @@ public final class DefaultLicenseGenerator extends ImplementorBase implements Li
   @Override
   public String generateCustomHostIdentifier(final HostIdRequest hostIdReq) throws LicGeneratorException {
     logger.in();
-    return DefaultLicenseGenerator.super.serialize(hostIdReq);
+    return Utils.safeSerialize(hostIdReq);
   }
 }

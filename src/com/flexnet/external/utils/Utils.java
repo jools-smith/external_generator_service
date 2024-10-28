@@ -45,8 +45,16 @@ public class Utils {
   public static final  ObjectMapper json_mapper = new ObjectMapper()
           .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
           .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-          .enable(SerializationFeature.INDENT_OUTPUT);
+          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+  public static String safeSerialize(final Object payload) {
+    try {
+      return json_mapper.writeValueAsString(payload);
+    }
+    catch (final Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
 
   static {
     json_mapper_indented.findAndRegisterModules();

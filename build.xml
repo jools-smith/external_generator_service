@@ -32,6 +32,7 @@
         <taskdef name="jaxws"
                  classname="com.sun.tools.ws.ant.WsImport"
                  classpathref="licservice.classpath"/>
+
         <jaxws wsdl="${BASE}/schema/IdGeneratorService.wsdl"
                sourcedestdir="${generated-src}"
                keep="true"
@@ -41,6 +42,7 @@
             <produces dir="${generated-src}/com/flexnet/external/webservice/idgenerator"/>
             <xjcarg value="-Xcollection-setter-injector"/>
         </jaxws>
+
         <jaxws wsdl="${BASE}/schema/LicenseGeneratorService.wsdl"
                sourcedestdir="${generated-src}"
                keep="true"
@@ -50,6 +52,7 @@
             <produces dir="${generated-src}/com/flexnet/external/webservice/keygenerator"/>
             <xjcarg value="-Xcollection-setter-injector"/>
         </jaxws>
+
         <jaxws wsdl="${BASE}/schema/RenewalService.wsdl"
                sourcedestdir="${generated-src}"
                keep="true"

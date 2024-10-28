@@ -1,9 +1,7 @@
 package com.flexnet.external.utils;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,7 +22,7 @@ public class Log {
     trace, debug, info, warning, error, severe
   }
 
-  class Context {
+  static class Context {
     final StackTraceElement element = new Throwable().getStackTrace()[3];
     final Calendar calendar = GregorianCalendar.getInstance();
 
@@ -51,12 +49,6 @@ public class Log {
       .enable(SerializationFeature.INDENT_OUTPUT)
       .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
   
-  final static ObjectMapper yaml = new ObjectMapper(new YAMLFactory())
-      .configure(SerializationFeature.INDENT_OUTPUT, true)
-      .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
-      .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
-      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-  
   private final Class<?> type;
   
   private Log(final Class<?> cls) {
@@ -81,15 +73,6 @@ public class Log {
   public void json(final Object obj) {
     try {
       log(Level.trace, json.writeValueAsString(obj));
-    }
-    catch (final Throwable e) {
-      exception(e);
-    }
-  }
-  
-  public void yaml(final Object obj) {
-    try {
-      log(Level.trace, yaml.writeValueAsString(obj));
     }
     catch (final Throwable e) {
       exception(e);

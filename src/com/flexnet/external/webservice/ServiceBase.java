@@ -4,35 +4,40 @@ import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.implementor.ImplementorFactory;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 public abstract class ServiceBase {
+  /** STATIC **/
+  static final String build = "0023";
+
+  static final String version = "2024.10.28";
+
+  final static ImplementorFactory factory = new ImplementorFactory();
+
+  final static Diagnostics diagnostics = new Diagnostics();
+
+  public static String getVersionBuild() {
+    return String.format("%s | %s", version, build);
+  }
+
+  public static Diagnostics getDiagnostics() {
+    return diagnostics;
+  }
+
+  public static ImplementorFactory getImplementorFactory() {
+    return factory;
+  }
 
   /** CLASS **/
   protected final Log logger = Log.create(this.getClass());
 
-  /** STATIC **/
-
-  protected final ImplementorFactory factory = new ImplementorFactory();
-
-  public final static Diagnostics diagnostics = new Diagnostics();
-
-  protected final static Log rootLogger = Log.create(ServiceBase.class);
-
-  private static final Runnable diagnostics_housekeeping = () -> {
-    try {
-      rootLogger.yaml(diagnostics.serialize());
-    }
-    catch(final Throwable t) {
-      rootLogger.exception(t);
-    }
-    finally {
-      rootLogger.out();
-    }
-  };
+  protected ServiceBase() {
+    this.logger.log(Log.Level.info, Utils.safeSerialize(ServiceBase.diagnostics.serialize()));
+  }
 
   protected String getLicenseTechnology(final Object obj) {
     final AtomicReference<LicenseTechnology> tech = new AtomicReference<>();
@@ -94,7 +99,7 @@ public abstract class ServiceBase {
                   frame.getMethodName(),
                   String.valueOf(frame.getLineNumber()));
   
-  protected Function<Throwable, SvcException> serviceException = (throwable) -> new SvcException() {
+  public Function<Throwable, SvcException> serviceException = (throwable) -> new SvcException() {
     {
       this.setMessage(frameDetails.apply(Thread.currentThread().getStackTrace()[3]));
       
