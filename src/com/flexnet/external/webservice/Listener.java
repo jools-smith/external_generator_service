@@ -16,6 +16,7 @@ public class Listener implements ServletContextListener {
   private enum CallbackType {
     contextInitialized, contextDestroyed
   }
+
   private final Map<CallbackType, List<Runnable>> callbacks = new HashMap<>();
 
   public Listener() {
@@ -40,10 +41,20 @@ public class Listener implements ServletContextListener {
     registerContext(CallbackType.contextDestroyed, action);
   }
 
+  private void logAttributeNames(final ServletContextEvent event) {
+    final Enumeration<String> itt = event.getServletContext().getAttributeNames();
+    while (itt.hasMoreElements()) {
+      logger.log(Log.Level.trace, itt.nextElement());
+    }
+  }
+
   @Override
-  public void contextInitialized(ServletContextEvent servletContextEvent) {
+  public void contextInitialized(final ServletContextEvent event) {
     logger.in();
+
     try {
+      logAttributeNames(event);
+
       Optional.ofNullable(this.callbacks.get(CallbackType.contextInitialized)).ifPresent(list -> {
         list.forEach(Runnable::run);
       });
@@ -57,9 +68,11 @@ public class Listener implements ServletContextListener {
   }
 
   @Override
-  public void contextDestroyed(ServletContextEvent servletContextEvent) {
+  public void contextDestroyed(final ServletContextEvent event) {
     logger.in();
     try {
+      logAttributeNames(event);
+
       Optional.ofNullable(this.callbacks.get(CallbackType.contextDestroyed)).ifPresent(list -> {
         list.forEach(Runnable::run);
       });

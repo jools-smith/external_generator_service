@@ -55,6 +55,9 @@ public class Log {
     this.type = cls;
   }
 
+  public Class<?> type() {
+    return this.type;
+  }
 
   public void log(final Level level, final String message) {
     final Context context = new Context();
@@ -80,7 +83,7 @@ public class Log {
   }
   
   public void in() {
-    log(Level.trace, ">>>");
+    log(Level.trace, "->");
   }
 
   public void me(final Object self) {
@@ -88,7 +91,7 @@ public class Log {
   }
   
   public void out() {
-    log(Level.trace, "<<<");
+    log(Level.trace, "<-");
   }
   
   public void exception(final Throwable t) {

@@ -52,19 +52,23 @@ public final class DefaultLicenseGenerator extends ImplementorBase implements Li
       {
         this.complete = true;
         this.licenseFileName = "license";
-        this.licenseText = Base64.getEncoder().encodeToString(Utils.safeSerialize(request).getBytes());
-        this.message = Base64.getEncoder().encodeToString(Utils.safeSerialize(ServiceBase.getDiagnostics().serialize()).getBytes());
 
-        licenseFiles = new ArrayList<LicenseFileMapItem>() {
-          {
-            add(new LicenseFileMapItem() {
-              {
-                this.name = licenseFileName;
-                this.value = licenseText;
-              }
-            });
-          }
-        };
+//        this.licenseText = Base64.getEncoder().encodeToString(Utils.safeSerialize(request).getBytes());
+//        this.message = Base64.getEncoder().encodeToString(Utils.safeSerialize(ServiceBase.getDiagnostics().serialize()).getBytes());
+
+        this.licenseText = "this is a license...";
+        this.message = "Hello world...";
+
+//        licenseFiles = new ArrayList<LicenseFileMapItem>() {
+//          {
+//            add(new LicenseFileMapItem() {
+//              {
+//                this.name = licenseFileName;
+//                this.value = licenseText;
+//              }
+//            });
+//          }
+//        };
       }
     };
   }

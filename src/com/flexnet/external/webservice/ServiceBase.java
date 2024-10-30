@@ -1,27 +1,30 @@
 package com.flexnet.external.webservice;
 
 import com.flexnet.external.type.*;
-import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.implementor.ImplementorFactory;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-public abstract class ServiceBase {
-  /** STATIC **/
-  static final String build = "0023";
+class ServiceStatic {
+  static final String build = "0037";
 
-  static final String version = "2024.10.28";
+  static final String version = "2024.10.30";
 
-  final static ImplementorFactory factory = new ImplementorFactory();
+  static final ImplementorFactory factory = new ImplementorFactory();
 
-  final static Diagnostics diagnostics = new Diagnostics();
+  static final Diagnostics diagnostics = new Diagnostics();
 
-  public static String getVersionBuild() {
-    return String.format("%s | %s", version, build);
+  public static String getVersion() {
+    return version;
+  }
+
+  public static String getBuild() {
+    return build;
   }
 
   public static Diagnostics getDiagnostics() {
@@ -32,11 +35,18 @@ public abstract class ServiceBase {
     return factory;
   }
 
-  /** CLASS **/
+  // debuggery
+  static {
+    Log.create(ServiceStatic.class).log(Log.Level.info, String.format("version | %s | %s", version, build));
+  }
+}
+
+public abstract class ServiceBase extends ServiceStatic {
+
   protected final Log logger = Log.create(this.getClass());
 
   protected ServiceBase() {
-    this.logger.log(Log.Level.info, Utils.safeSerialize(ServiceBase.diagnostics.serialize()));
+    this.logger.in();
   }
 
   protected String getLicenseTechnology(final Object obj) {
@@ -76,15 +86,14 @@ public abstract class ServiceBase {
       tech.set(((ConsolidatedLicenseRecord) obj).getLicenseTechnology());
     }
 
-
-    if (tech.get() != null) {
-      logger.log(Log.Level.info, "license tech:" + tech.get().getName());
+    if (tech.get() == null) {
+      throw new RuntimeException(obj.getClass().getName() + " | cannot retrieve license technology");
+    }
+    else {
+      this.logger.log(Log.Level.info, "license tech:" + tech.get().getName());
       return tech.get().getName();
     }
-
-    throw new RuntimeException(obj.getClass().getName() + " | cannot retrieve license technology");
   }
-
 
   protected Token token() {
     final StackTraceElement frame = Thread.currentThread().getStackTrace()[2];
@@ -92,16 +101,9 @@ public abstract class ServiceBase {
     return diagnostics.getToken(this.getClass(), frame.getMethodName());
   }
   
-  protected static Function<StackTraceElement, String> frameDetails = (frame) ->
-          String.join("|",
-                  frame.getFileName(),
-                  frame.getClassName(),
-                  frame.getMethodName(),
-                  String.valueOf(frame.getLineNumber()));
-  
   public Function<Throwable, SvcException> serviceException = (throwable) -> new SvcException() {
     {
-      this.setMessage(frameDetails.apply(Thread.currentThread().getStackTrace()[3]));
+      this.setMessage(Utils.frameDetails(Thread.currentThread().getStackTrace()[3]));
       
       this.setName(throwable.getClass().getName());
     }

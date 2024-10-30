@@ -40,12 +40,12 @@ public class ObjectFactory {
     private final static QName _EntitlementLineItem_QNAME = new QName("urn:com.flexnet.external.type", "EntitlementLineItem");
     private final static QName _Status_QNAME = new QName("urn:com.flexnet.external.type", "Status");
     private final static QName _LicenseFileDefinitionMap_QNAME = new QName("urn:com.flexnet.external.type", "LicenseFileDefinitionMap");
-    private final static QName _ProductRequestHeaderResourceBundleKey_QNAME = new QName("urn:com.flexnet.external.type", "headerResourceBundleKey");
-    private final static QName _ProductRequestTrailerResourceBundleKey_QNAME = new QName("urn:com.flexnet.external.type", "trailerResourceBundleKey");
     private final static QName _SuiteProductInfoPackageVersion_QNAME = new QName("urn:com.flexnet.external.type", "packageVersion");
     private final static QName _SuiteProductInfoIsDateBasedPackageVersion_QNAME = new QName("urn:com.flexnet.external.type", "isDateBasedPackageVersion");
     private final static QName _SuiteProductInfoPackageName_QNAME = new QName("urn:com.flexnet.external.type", "packageName");
     private final static QName _SuiteProductInfoPackageVersionFormat_QNAME = new QName("urn:com.flexnet.external.type", "packageVersionFormat");
+    private final static QName _ProductRequestHeaderResourceBundleKey_QNAME = new QName("urn:com.flexnet.external.type", "headerResourceBundleKey");
+    private final static QName _ProductRequestTrailerResourceBundleKey_QNAME = new QName("urn:com.flexnet.external.type", "trailerResourceBundleKey");
     private final static QName _ProductProductCategory_QNAME = new QName("urn:com.flexnet.external.type", "productCategory");
     private final static QName _ProductHeader_QNAME = new QName("urn:com.flexnet.external.type", "header");
     private final static QName _ProductTrailer_QNAME = new QName("urn:com.flexnet.external.type", "trailer");
@@ -701,24 +701,6 @@ public class ObjectFactory {
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "headerResourceBundleKey", scope = ProductRequest.class)
-    public JAXBElement<String> createProductRequestHeaderResourceBundleKey(String value) {
-        return new JAXBElement<String>(_ProductRequestHeaderResourceBundleKey_QNAME, String.class, ProductRequest.class, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "trailerResourceBundleKey", scope = ProductRequest.class)
-    public JAXBElement<String> createProductRequestTrailerResourceBundleKey(String value) {
-        return new JAXBElement<String>(_ProductRequestTrailerResourceBundleKey_QNAME, String.class, ProductRequest.class, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
-     */
     @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersion", scope = SuiteProductInfo.class)
     public JAXBElement<String> createSuiteProductInfoPackageVersion(String value) {
         return new JAXBElement<String>(_SuiteProductInfoPackageVersion_QNAME, String.class, SuiteProductInfo.class, value);
@@ -749,6 +731,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "packageVersionFormat", scope = SuiteProductInfo.class)
     public JAXBElement<String> createSuiteProductInfoPackageVersionFormat(String value) {
         return new JAXBElement<String>(_SuiteProductInfoPackageVersionFormat_QNAME, String.class, SuiteProductInfo.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "headerResourceBundleKey", scope = ProductRequest.class)
+    public JAXBElement<String> createProductRequestHeaderResourceBundleKey(String value) {
+        return new JAXBElement<String>(_ProductRequestHeaderResourceBundleKey_QNAME, String.class, ProductRequest.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "urn:com.flexnet.external.type", name = "trailerResourceBundleKey", scope = ProductRequest.class)
+    public JAXBElement<String> createProductRequestTrailerResourceBundleKey(String value) {
+        return new JAXBElement<String>(_ProductRequestTrailerResourceBundleKey_QNAME, String.class, ProductRequest.class, value);
     }
 
     /**
