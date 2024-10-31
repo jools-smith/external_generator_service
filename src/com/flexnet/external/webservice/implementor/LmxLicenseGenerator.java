@@ -5,7 +5,11 @@ import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
@@ -130,15 +134,14 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
 
           licenses.add(new LicenseBuilder() {
             {
-              this.withFeatureName(feature.getName());
+              attributes.forEach(this::withMetadata);
 
               this.withFeatureName(feature.getName())
-                      .withFeatureVersion(feature.getVersion())
-                      .withFeatureCount(feature.getCount() * multiplier)
-                      .withStartDate(startDate)
-                      .withEndDate(endDate);
-
-              attributes.forEach(this::withMetadata);
+                  .withFeatureVersion(feature.getVersion())
+                  .withFeatureCount(feature.getCount() * multiplier)
+                  .withStartDate(startDate)
+                  .withEndDate(endDate)
+                  .seal();
             }
           });
         });
@@ -193,9 +196,11 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
         return Optional.empty();
       }
 
-      logger.log(Log.Level.info, Utils.safeSerializeYaml(set));
+//      logger.log(Log.Level.info, Utils.safeSerializeYaml(set));
 
-      return Optional.of(set.getAttributes().stream().filter(att -> att.getValue() != null).collect(Collectors.toMap(CustomAttributeDescriptor::getName, CustomAttributeDescriptor::getValue)));
+      return Optional.of(set.getAttributes().stream()
+              .filter(att -> att.getValue() != null)
+              .collect(Collectors.toMap(CustomAttributeDescriptor::getName, att -> att.getValue().replace(',','|'))));
     }
     finally {
       logger.out();
@@ -230,7 +235,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     private static final String KEYTYPE = "KEYTYPE";
     private static final String COMMENT = "COMMENT";
     private static final String SN = "SN";
-    private static final String SHARE = "SHARE";
+    private static final String KEY = "KEY";
 
     private final static String lf = System.lineSeparator();
     private final static String lbrace = "{";
@@ -244,6 +249,23 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     private String end = null;
     private Long count = null;
 
+    public void seal() {
+
+      try {
+        this.metadata.remove(KEY);
+
+        final String key = DatatypeConverter.printHexBinary(MessageDigest
+                .getInstance("MD5")
+                .digest(build().getBytes(Charset.defaultCharset())));
+
+
+        this.metadata.put(KEY, key);
+      }
+      catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException(e);
+      }
+
+    }
     public LicenseBuilder withFeatureName(final String value) {
       this.name = value;
       return this;
@@ -279,34 +301,34 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
 
       final Function<String, Void> add_metadata = (key) -> {
         if (this.metadata.containsKey(key)) {
-          bfr.append(String.format(" %s=%s", key, this.metadata.get(key)));
+          bfr.append(String.format("%s=%s ", key, this.metadata.get(key)));
         }
         return null;
       };
 
       bfr.append(String.format("FEATURE %s", this.name)).append(lf);
       bfr.append(lbrace).append(lf);
-      bfr.append("VENDOR=HBMUK");
+      bfr.append("VENDOR=HBMUK ");
 
       if (count != null) {
-        bfr.append(String.format(" COUNT=%s", count));
+        bfr.append(String.format("COUNT=%s ", count));
       }
       else {
-        bfr.append(" COUNT=UNLIMITED");
+        bfr.append("COUNT=UNLIMITED ");
       }
 
       add_metadata.apply(KEYTYPE);
 
       if (this.version != null) {
-        bfr.append(String.format(" VERSION=%s", version));
+        bfr.append(String.format("VERSION=%s ", version));
       }
 
       if (this.start != null) {
-        bfr.append(String.format(" START=%s", start));
+        bfr.append(String.format("START=%s ", start));
       }
 
       if (this.end != null) {
-        bfr.append(String.format(" END=%s", end));
+        bfr.append(String.format("END=%s ", end));
       }
 
       // new line
@@ -317,6 +339,10 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
       add_metadata.apply(SN);
 
       // new line
+      bfr.append(lf);
+
+      add_metadata.apply(KEY);
+
       bfr.append(lf).append(rbrace).append(lf);
 
       return bfr.toString();
