@@ -35,8 +35,7 @@ public class ImplementorFactory {
       addImplementor(RenewalServiceInterface.class, new DefaultRenewalService());
 
       /* LMX */
-      /* don't deploy yet */
-//      addImplementor(LicenseGeneratorServiceInterface.class, new LmxLicenseGenerator());
+      addImplementor(LicenseGeneratorServiceInterface.class, new LmxLicenseGenerator());
     }
     catch (final Throwable t) {
       logger.exception(t);

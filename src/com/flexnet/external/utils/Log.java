@@ -2,11 +2,15 @@ package com.flexnet.external.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.stream.Collectors;
 
@@ -62,15 +66,26 @@ public class Log {
   public void log(final Level level, final String message) {
     final Context context = new Context();
 
-    System.out.printf("%s %s [%s] {%s} %s.%s(%d) %s\n",
-        context.getTime(), 
-        level.toString().toUpperCase(),
-        Thread.currentThread().getName(),
-        type.getSimpleName(),
-        Utils.abbreviatePackageName(context.getClassName(), 30),
-        context.getMethod(),
-        context.getLine(), 
-        message);
+final String content = String.format("%s %s [%s] {%s} %s.%s(%d) %s",
+                context.getTime(),
+                level.toString().toUpperCase(),
+                Thread.currentThread().getName(),
+                type.getSimpleName(),
+                Utils.abbreviatePackageName(context.getClassName(), 30),
+                context.getMethod(),
+                context.getLine(),
+                message);
+
+    System.out.println(content);
+
+    final File file = new File("c:\\revenera\\revenera.log");
+
+    try {
+      FileUtils.writeLines(file, Collections.singletonList(content), true);
+    }
+    catch (IOException e) {
+      exception(e);
+    }
   }
   
   public void json(final Object obj) {
