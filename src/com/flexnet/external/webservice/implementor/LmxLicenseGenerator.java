@@ -64,6 +64,11 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     return Optional.of(list.stream().collect(Collectors.toMap(CustomAttribute::getName, att -> String.join("|", att.getAttributes()))));
   }
 
+  // EXCEPTION
+  private <T> T except(final Class<T> type, final String message) {
+    throw new RuntimeException(message);
+  }
+
   @Override
   public PingResponse ping(final PingRequest request) {
     logger.in();
@@ -100,50 +105,53 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   @Override
   public GeneratorResponse generateLicense(final GeneratorRequest request) {
     logger.in();
-
+    //TODO:DEBUG
     logger.log(Log.Level.info, "here we go...");
 
     final Map<String, String> attributes = new HashMap<>();
-    logger.log(Log.Level.info, "attributes: " + attributes);
 
     fromAttributeSet(request.getLicenseModel().getEntitlementTimeAttributes()).ifPresent(attributes::putAll);
-    logger.log(Log.Level.info, "attributes: " + attributes);
-
     fromAttributeSet(request.getLicenseModel().getFulfillmentTimeAttributes()).ifPresent(attributes::putAll);
-    logger.log(Log.Level.info, "attributes: " + attributes);
-
     fromAttributeSet(request.getLicenseModel().getModelTimeAttributes()).ifPresent(attributes::putAll);
-    logger.log(Log.Level.info, "attributes: " + attributes);
+    //TODO:DEBUG
+    logger.log(Log.Level.debug, "attributes: " + attributes);
 
     final String startDate = gregorian_calendar_to_yyymmdd(request.getStartDate());
-    logger.log(Log.Level.info, "startDate: " + startDate);
+    //TODO:DEBUG
+    logger.log(Log.Level.debug, "startDate: " + startDate);
 
     final String endDate = gregorian_calendar_to_yyymmdd(request.getExpirationDate());
-    logger.log(Log.Level.info, "endDate: " + endDate);
+    //TODO:DEBUG
+    logger.log(Log.Level.debug, "endDate: " + endDate);
 
     final List<LicenseBuilder> licenses = new ArrayList<>();
 
-    logger.log(Log.Level.info, "processing products");
+    //TODO:DEBUG
+    logger.log(Log.Level.debug, "processing products");
     request.getEntitledProducts().forEach(prod -> {
-      logger.log(Log.Level.info, "product: " + prod.getName());
+      //TODO:DEBUG
+      logger.log(Log.Level.debug, "product: " + prod.getName());
 
       //quantity per copy
       final int multiplier = prod.getQuantityPerCopy();
-      logger.log(Log.Level.info, "multiplier: " + multiplier);
+      //TODO:DEBUG
+      logger.log(Log.Level.debug, "multiplier: " + multiplier);
 
       prod.getFeatures().forEach(feature -> {
-        logger.log(Log.Level.info, "feature: " + feature.getName());
+        //TODO:DEBUG
+        logger.log(Log.Level.debug, "feature: " + feature.getName());
 
         licenses.add(new LicenseBuilder() {
           {
             attributes.forEach(this::withMetadata);
 
-            this.withFeatureName(feature.getName())
-                    .withFeatureVersion(feature.getVersion())
-                    .withFeatureCount(feature.getCount() * multiplier)
-                    .withStartDate(startDate)
-                    .withEndDate(endDate)
-                    .seal();
+            this.withFeatureName(feature.getName());
+            this.withFeatureVersion(feature.getVersion());
+            this.withFeatureCount(feature.getCount() * multiplier);
+            this.withStartDate(startDate);
+            this.withEndDate(endDate);
+            this.seal();
+
           }
         });
       });
@@ -218,6 +226,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   @Override
   public ConsolidatedLicense consolidateFulfillments(final FulfillmentRecordSet fulfillmentRecordset) {
 
+    //TODO: this needs to be modified to get a meaningful separator
     final AtomicReference<String> separator = new AtomicReference<>("default");
 
     final String license = fulfillmentRecordset.getFulfillments()
@@ -240,10 +249,6 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
 
   }
 
-  private <T> T except(final Class<T> type, final String message) {
-    throw new RuntimeException(message);
-  }
-
   @Override
   public LicenseFileDefinitionMap generateLicenseFilenames(final GeneratorRequest fileRec) {
     return except(LicenseFileDefinitionMap.class, "generateLicenseFilenames not implemented");
@@ -260,6 +265,8 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static class LicenseBuilder {
+    private final static Log logger = Log.create(LicenseBuilder.class);
+
     private static final String KEYTYPE = "KEYTYPE";
     private static final String COMMENT = "COMMENT";
     private static final String SN = "SN";
@@ -282,7 +289,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     }
 
     public void seal() {
-
+      logger.in();
       try {
         this.metadata.remove(KEY);
 
@@ -290,40 +297,49 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
                 .getInstance("MD5")
                 .digest(build().getBytes(Charset.defaultCharset())));
 
+        //TODO:DEBUG
+        logger.log(Log.Level.info, key);
 
         this.metadata.put(KEY, key);
       }
       catch (NoSuchAlgorithmException e) {
+        logger.exception(e);
         throw new RuntimeException(e);
       }
 
     }
     public LicenseBuilder withFeatureName(final String value) {
+      logger.log(Log.Level.trace, value);
       this.name = value;
       return this;
     }
 
     public LicenseBuilder withFeatureVersion(final String value) {
+      logger.log(Log.Level.trace, value);
       this.version = value;
       return this;
     }
 
     public LicenseBuilder withStartDate(final String value) {
+      logger.log(Log.Level.trace, value);
       this.start = value;
       return this;
     }
 
     public LicenseBuilder withEndDate(final String value) {
+      logger.log(Log.Level.trace, value);
       this.end = value;
       return this;
     }
 
     public LicenseBuilder withFeatureCount(final long value) {
+      logger.log(Log.Level.trace, ""+value);
       this.count = value;
       return this;
     }
 
     public LicenseBuilder withMetadata(final String key, final String value) {
+      logger.log(Log.Level.trace, key + "|" + value);
       this.metadata.put(key, value);
       return this;
     }
@@ -331,53 +347,59 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     public String build() {
       final StringBuilder bfr = new StringBuilder();
 
-      final Function<String, Void> add_metadata = (key) -> {
-        if (this.metadata.containsKey(key)) {
-          bfr.append(String.format("%s=%s ", key, this.metadata.get(key)));
+      try {
+        final Function<String, Void> add_metadata = (key) -> {
+          if (this.metadata.containsKey(key)) {
+            bfr.append(String.format("%s=%s ", key, this.metadata.get(key)));
+          }
+          return null;
+        };
+
+        bfr.append(String.format("FEATURE %s", this.name)).append(lf);
+        bfr.append(lbrace).append(lf);
+        bfr.append("VENDOR=HBMUK ");
+
+        if (count != null) {
+          bfr.append(String.format("COUNT=%s ", count));
         }
-        return null;
-      };
+        else {
+          bfr.append("COUNT=UNLIMITED ");
+        }
 
-      bfr.append(String.format("FEATURE %s", this.name)).append(lf);
-      bfr.append(lbrace).append(lf);
-      bfr.append("VENDOR=HBMUK ");
+        add_metadata.apply(KEYTYPE);
 
-      if (count != null) {
-        bfr.append(String.format("COUNT=%s ", count));
+        if (this.version != null) {
+          bfr.append(String.format("VERSION=%s ", version));
+        }
+
+        if (this.start != null) {
+          bfr.append(String.format("START=%s ", start));
+        }
+
+        if (this.end != null) {
+          bfr.append(String.format("END=%s ", end));
+        }
+
+        // new line
+        bfr.append(lf);
+
+        add_metadata.apply(COMMENT);
+
+        add_metadata.apply(SN);
+
+        // new line
+        bfr.append(lf);
+
+        add_metadata.apply(KEY);
+
+        bfr.append(lf).append(rbrace).append(lf);
+
+        return bfr.toString();
       }
-      else {
-        bfr.append("COUNT=UNLIMITED ");
+      catch (final Exception e) {
+        logger.exception(e);
+        throw new RuntimeException(e);
       }
-
-      add_metadata.apply(KEYTYPE);
-
-      if (this.version != null) {
-        bfr.append(String.format("VERSION=%s ", version));
-      }
-
-      if (this.start != null) {
-        bfr.append(String.format("START=%s ", start));
-      }
-
-      if (this.end != null) {
-        bfr.append(String.format("END=%s ", end));
-      }
-
-      // new line
-      bfr.append(lf);
-
-      add_metadata.apply(COMMENT);
-
-      add_metadata.apply(SN);
-
-      // new line
-      bfr.append(lf);
-
-      add_metadata.apply(KEY);
-
-      bfr.append(lf).append(rbrace).append(lf);
-
-      return bfr.toString();
     }
   }
 }
