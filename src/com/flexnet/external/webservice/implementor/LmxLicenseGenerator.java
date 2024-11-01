@@ -13,8 +13,10 @@ import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class LmxLicenseGenerator extends ImplementorBase implements LicenseGeneratorServiceInterface {
   static final SimpleDateFormat yyyyymmdd = new SimpleDateFormat("yyyy-MM-dd");
@@ -98,94 +100,67 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   @Override
   public GeneratorResponse generateLicense(final GeneratorRequest request) {
     logger.in();
-    try {
-      logger.log(Log.Level.info, "here we go...");
 
-      final Map<String, String> attributes = new HashMap<>();
-      logger.log(Log.Level.info, "attributes: " + attributes);
+    logger.log(Log.Level.info, "here we go...");
 
-      fromAttributeSet(request.getLicenseModel().getEntitlementTimeAttributes()).ifPresent(attributes::putAll);
-      logger.log(Log.Level.info, "attributes: " + attributes);
+    final Map<String, String> attributes = new HashMap<>();
+    logger.log(Log.Level.info, "attributes: " + attributes);
 
-      fromAttributeSet(request.getLicenseModel().getFulfillmentTimeAttributes()).ifPresent(attributes::putAll);
-      logger.log(Log.Level.info, "attributes: " + attributes);
+    fromAttributeSet(request.getLicenseModel().getEntitlementTimeAttributes()).ifPresent(attributes::putAll);
+    logger.log(Log.Level.info, "attributes: " + attributes);
 
-      fromAttributeSet(request.getLicenseModel().getModelTimeAttributes()).ifPresent(attributes::putAll);
-      logger.log(Log.Level.info, "attributes: " + attributes);
+    fromAttributeSet(request.getLicenseModel().getFulfillmentTimeAttributes()).ifPresent(attributes::putAll);
+    logger.log(Log.Level.info, "attributes: " + attributes);
 
-      final String startDate = gregorian_calendar_to_yyymmdd(request.getStartDate());
-      logger.log(Log.Level.info, "startDate: " + startDate);
+    fromAttributeSet(request.getLicenseModel().getModelTimeAttributes()).ifPresent(attributes::putAll);
+    logger.log(Log.Level.info, "attributes: " + attributes);
 
-      final String endDate = gregorian_calendar_to_yyymmdd(request.getExpirationDate());
-      logger.log(Log.Level.info, "endDate: " + endDate);
+    final String startDate = gregorian_calendar_to_yyymmdd(request.getStartDate());
+    logger.log(Log.Level.info, "startDate: " + startDate);
 
-      final List<LicenseBuilder> licenses = new ArrayList<>();
+    final String endDate = gregorian_calendar_to_yyymmdd(request.getExpirationDate());
+    logger.log(Log.Level.info, "endDate: " + endDate);
 
-      logger.log(Log.Level.info, "processing products");
-      request.getEntitledProducts().forEach(prod -> {
-        logger.log(Log.Level.info, "product: " + prod.getName());
+    final List<LicenseBuilder> licenses = new ArrayList<>();
 
-        //quantity per copy
-        final int multiplier = prod.getQuantityPerCopy();
-        logger.log(Log.Level.info, "multiplier: " + multiplier);
+    logger.log(Log.Level.info, "processing products");
+    request.getEntitledProducts().forEach(prod -> {
+      logger.log(Log.Level.info, "product: " + prod.getName());
 
-        prod.getFeatures().forEach(feature -> {
-          logger.log(Log.Level.info, "feature: " + feature.getName());
+      //quantity per copy
+      final int multiplier = prod.getQuantityPerCopy();
+      logger.log(Log.Level.info, "multiplier: " + multiplier);
 
-          licenses.add(new LicenseBuilder() {
-            {
-              attributes.forEach(this::withMetadata);
+      prod.getFeatures().forEach(feature -> {
+        logger.log(Log.Level.info, "feature: " + feature.getName());
 
-              this.withFeatureName(feature.getName())
-                  .withFeatureVersion(feature.getVersion())
-                  .withFeatureCount(feature.getCount() * multiplier)
-                  .withStartDate(startDate)
-                  .withEndDate(endDate)
-                  .seal();
-            }
-          });
+        licenses.add(new LicenseBuilder() {
+          {
+            attributes.forEach(this::withMetadata);
+
+            this.withFeatureName(feature.getName())
+                    .withFeatureVersion(feature.getVersion())
+                    .withFeatureCount(feature.getCount() * multiplier)
+                    .withStartDate(startDate)
+                    .withEndDate(endDate)
+                    .seal();
+          }
         });
       });
+    });
 
-      List<LicenseFileMapItem> licFiles = new ArrayList<LicenseFileMapItem>();
+    return new GeneratorResponse() {
+      {
+        this.licenseFiles = makeLicenseFiles(
+                request.getLicenseTechnology().getLicenseFileDefinitions(),
+                licenses.stream().map(LicenseBuilder::build).collect(Collectors.joining("\n\n")),
+                null);
 
-      for (LicenseFileDefinition lfd : request.getLicenseTechnology().getLicenseFileDefinitions()) {
+        setLicenseText("#Generated by external server at " + Instant.now().toString());
 
-        switch (lfd.getLicenseStorageType()) {
-          case TEXT:
-            licFiles.add(new LicenseFileMapItem() {
-              {
-                this.name = lfd.getName();
-                this.value = licenses.stream().map(LicenseBuilder::build).collect(Collectors.joining("\n\n"));
-              }
-            });
-            break;
-          case BINARY:
-            licFiles.add(new LicenseFileMapItem() {
-              {
-                this.name = lfd.getName();
-                this.value = "this is a license!".getBytes();
-              }
-            });
-            break;
-          default:
-            throw new RuntimeException("invalid license file type");
-        }
+        setLicenseFileName("nofile.txt");
       }
-
-      return new GeneratorResponse() {
-        {
-          setLicenseFiles(licFiles);
-
-          setLicenseText("#Generated by external server at " + Instant.now().toString());
-
-          setLicenseFileName("nofile.txt");
-        }
-      };
-    }
-    finally {
-      logger.out();
-    }
+    };
   }
 
   static Optional<Map<String, String>> fromAttributeSet(final AttributeSet set) {
@@ -207,9 +182,62 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     }
   }
 
+  static List<LicenseFileMapItem> makeLicenseFiles(final List<LicenseFileDefinition> files, final String text, final byte[] bytes) {
+    return new ArrayList<LicenseFileMapItem>() {
+      {
+        files.forEach(lfd -> {
+          switch (lfd.getLicenseStorageType()) {
+            case TEXT:
+              Optional.ofNullable(text).ifPresent(license -> {
+                this.add(new LicenseFileMapItem() {
+                  {
+                    this.name = lfd.getName();
+                    this.value = license;
+                  }
+                });
+              });
+              break;
+            case BINARY:
+              Optional.ofNullable(bytes).ifPresent(license -> {
+                this.add(new LicenseFileMapItem() {
+                  {
+                    this.name = lfd.getName();
+                    this.value = license;
+                  }
+                });
+              });
+              break;
+            default:
+              throw new RuntimeException("invalid license file type");
+          }
+        });
+      }
+    };
+  }
+
   @Override
   public ConsolidatedLicense consolidateFulfillments(final FulfillmentRecordSet fulfillmentRecordset) {
-    return except(ConsolidatedLicense.class, "consolidateFulfillments not implemented");
+
+    final AtomicReference<String> separator = new AtomicReference<>("default");
+
+    final String license = fulfillmentRecordset.getFulfillments()
+            .stream()
+            .filter(fulfilment -> separator.getAndSet(fulfilment.getFulfillmentId()) != null)
+            .flatMap(fulfilment -> fulfilment.getLicenseFiles().stream())
+            .filter(lfd -> String.class.isAssignableFrom(lfd.getValue().getClass()))
+            .map(lfd -> lfd.getValue().toString())
+            .collect(Collectors.joining(String.format("\n### %s ###\n\n", separator.get())));
+
+    return new ConsolidatedLicense() {
+      {
+        this.fulfillments = fulfillmentRecordset.getFulfillments();
+
+        fulfillmentRecordset.getFulfillments().stream().findAny().ifPresent(fid -> {
+          this.licFiles = makeLicenseFiles(fid.getLicenseTechnology().getLicenseFileDefinitions(), license, null);
+        });
+      }
+    };
+
   }
 
   private <T> T except(final Class<T> type, final String message) {
@@ -248,6 +276,10 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     private String start = null;
     private String end = null;
     private Long count = null;
+
+    LicenseBuilder() {
+
+    }
 
     public void seal() {
 
