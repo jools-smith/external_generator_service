@@ -1,11 +1,11 @@
 package com.flexnet.external.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -21,9 +21,22 @@ import java.util.stream.Collectors;
  */
 public class Log {
   private static final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss.zzz");
-  
+
+  public static final Level loggingLevel = Level.trace;
+
+  public static boolean willLog(final Level level) {
+    return level.value >= loggingLevel.value;
+  }
+
   public enum Level {
-    trace, debug, info, warning, error, severe
+
+    trace(0), debug(1), info(2), warning(3), error(4), severe(5);
+
+    public final int value;
+
+    private Level(final int value) {
+      this.value = value;
+    }
   }
 
   static class Context {
@@ -35,7 +48,6 @@ public class Log {
     }
 
     String getClassName() {
-
       return this.element.getClassName();
     }
 
@@ -47,12 +59,7 @@ public class Log {
       return this.element.getLineNumber();
     }
   }
-  
-  private final static ObjectMapper json = new ObjectMapper()
-      .enable(SerializationFeature.WRAP_EXCEPTIONS)
-      .enable(SerializationFeature.INDENT_OUTPUT)
-      .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-  
+
   private final Class<?> type;
   
   private Log(final Class<?> cls) {
@@ -63,34 +70,53 @@ public class Log {
     return this.type;
   }
 
-  public void log(final Level level, final String message) {
-    final Context context = new Context();
+  public void dump(final String content) {
+    final String root = "c:\\revenera";
 
-final String content = String.format("%s %s [%s] {%s} %s.%s(%d) %s",
-                context.getTime(),
-                level.toString().toUpperCase(),
-                Thread.currentThread().getName(),
-                type.getSimpleName(),
-                Utils.abbreviatePackageName(context.getClassName(), 30),
-                context.getMethod(),
-                context.getLine(),
-                message);
+    if (Files.exists(Paths.get(root))) {
+      try {
+        final File file = Paths.get(root, "revenera.log").toAbsolutePath().toFile();
 
-    System.out.println(content);
-
-    final File file = new File("c:\\revenera\\revenera.log");
-
-    try {
-      FileUtils.writeLines(file, Collections.singletonList(content), true);
+        FileUtils.writeLines(file, Collections.singletonList(content), true);
+      }
+      catch (IOException e) {
+        exception(e);
+      }
     }
-    catch (IOException e) {
+  }
+
+  public void log(final Level level, final String message) {
+    if (willLog(level)) {
+      final Context context = new Context();
+
+      final String content = String.format("%s %s [%s] {%s} %s.%s(%d) %s",
+              context.getTime(),
+              level.toString().toUpperCase(),
+              Thread.currentThread().getName(),
+              type.getSimpleName(),
+              Utils.abbreviatePackageName(context.getClassName(), 30),
+              context.getMethod(),
+              context.getLine(),
+              message);
+
+      System.out.println(content);
+
+      dump(content);
+    }
+  }
+
+  public void yaml(final Level level, final Object obj) {
+    try {
+      log(level, Utils.safeSerializeYaml(obj));
+    }
+    catch (final Throwable e) {
       exception(e);
     }
   }
-  
-  public void json(final Object obj) {
+
+  public void json(final Level level, final Object obj) {
     try {
-      log(Level.trace, json.writeValueAsString(obj));
+      log(level, Utils.safeSerialize(obj));
     }
     catch (final Throwable e) {
       exception(e);
@@ -124,7 +150,6 @@ final String content = String.format("%s %s [%s] {%s} %s.%s(%d) %s",
   }
 
   public void array(final Level level, final Object... params) {
-
     log(level, Arrays.stream(params).map(Object::toString).collect(Collectors.joining(" | ")));
   }
 

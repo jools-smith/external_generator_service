@@ -2,6 +2,7 @@ package com.flexnet.external.webservice.implementor;
 
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.webservice.idgenerator.IdGeneratorServiceInterface;
+import com.flexnet.external.webservice.implementor.lmx.LmxLicenseGenerator;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 import com.flexnet.external.webservice.renewal.RenewalServiceInterface;
 import org.apache.commons.lang3.tuple.Triple;

@@ -3,9 +3,7 @@ package com.flexnet.external.webservice.idgenerator;
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.utils.Log;
-import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.ServiceBase;
-import com.flexnet.external.webservice.implementor.DefaultLicenseGenerator;
 
 import javax.jws.WebService;
 
@@ -18,6 +16,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public PingResponse ping(final PingRequest payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
@@ -34,6 +33,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public Id generateEntitlementID(final Entitlement payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
@@ -51,6 +51,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public Id generateLineItemID(final EntitlementLineItem payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateLineItemID(payload);
@@ -66,6 +67,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public Id generateWebRegKey(final BulkEntitlement payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateWebRegKey(payload);
@@ -81,6 +83,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public Id generateMaintenanceItemID(final MaintenanceItem payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateMaintenanceItemID(payload);
@@ -96,6 +99,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public Id generateFulfillmentID(final FulfillmentRecord payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateFulfillmentID(payload);
@@ -111,6 +115,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   @Override
   public Id generateConsolidatedLicenseID(final ConsolidatedLicenseRecord payload) throws IdGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateConsolidatedLicenseID(payload);
@@ -122,5 +127,4 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
       token.commit();
     }
   }
-  
 }

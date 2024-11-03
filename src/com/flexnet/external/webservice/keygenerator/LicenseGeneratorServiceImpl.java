@@ -3,7 +3,6 @@ package com.flexnet.external.webservice.keygenerator;
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.utils.Log;
-import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.ServiceBase;
 
 import javax.jws.WebService;
@@ -17,6 +16,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   @Override
   public PingResponse ping(final PingRequest payload) throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       return getImplementorFactory().getDefaultImplementor(LicenseGeneratorServiceInterface.class).ping(payload);
@@ -32,6 +32,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   @Override
   public Status validateProduct(final ProductRequest payload) throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       final String tech = super.getLicenseTechnology(payload);
@@ -49,6 +50,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   @Override
   public Status validateLicenseModel(final LicenseModelRequest payload) throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       final String tech = super.getLicenseTechnology(payload);
@@ -66,6 +68,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   @Override
   public GeneratorResponse generateLicense(final GeneratorRequest payload) throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
@@ -84,6 +87,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   @Override
   public ConsolidatedLicense consolidateFulfillments(final FulfillmentRecordSet payload) throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
     try {
       final String tech = super.getLicenseTechnology(payload);
@@ -102,6 +106,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   public LicenseFileDefinitionMap generateLicenseFilenames(final GeneratorRequest payload)
       throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
@@ -122,6 +127,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   public LicenseFileDefinitionMap generateConsolidatedLicenseFilenames(final ConsolidatedLicenseResquest payload)
       throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
@@ -140,6 +146,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
   @Override
   public String generateCustomHostIdentifier(final HostIdRequest payload) throws LicGeneratorException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {

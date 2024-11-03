@@ -1,5 +1,7 @@
 package com.flexnet.external.webservice.implementor;
 
+import com.flexnet.external.type.LicenseFileDefinition;
+import com.flexnet.external.type.LicenseFileMapItem;
 import com.flexnet.external.type.PingRequest;
 import com.flexnet.external.type.PingResponse;
 import com.flexnet.external.utils.Log;
@@ -8,6 +10,9 @@ import com.flexnet.external.webservice.ServiceBase;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public abstract class ImplementorBase {
@@ -66,6 +71,40 @@ public abstract class ImplementorBase {
 
     }
   }
+
+  protected List<LicenseFileMapItem> makeLicenseFiles(final List<LicenseFileDefinition> files, final String text, final byte[] bytes) {
+    return new ArrayList<LicenseFileMapItem>() {
+      {
+        files.forEach(lfd -> {
+          switch (lfd.getLicenseStorageType()) {
+            case TEXT:
+              Optional.ofNullable(text).ifPresent(license -> {
+                this.add(new LicenseFileMapItem() {
+                  {
+                    this.name = lfd.getName();
+                    this.value = license;
+                  }
+                });
+              });
+              break;
+            case BINARY:
+              Optional.ofNullable(bytes).ifPresent(license -> {
+                this.add(new LicenseFileMapItem() {
+                  {
+                    this.name = lfd.getName();
+                    this.value = license;
+                  }
+                });
+              });
+              break;
+            default:
+              throw new RuntimeException("invalid license file type");
+          }
+        });
+      }
+    };
+  }
+
   protected PingResponse ping(final PingRequest request) {
     logger.in();
 

@@ -6,7 +6,6 @@ import com.flexnet.external.type.RenewableEntitlementLineItems;
 import com.flexnet.external.type.RenewalResponse;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.utils.Log;
-import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.ServiceBase;
 
 import javax.jws.WebService;
@@ -19,6 +18,7 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
   @Override
   public PingResponse ping(final PingRequest payload) throws RenewalSeviceException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
@@ -36,6 +36,7 @@ public class RenewalRedirectServiceImpl extends ServiceBase implements RenewalSe
   @Override
   public RenewalResponse request(final RenewableEntitlementLineItems payload) throws RenewalSeviceException {
     super.logger.in();
+    super.logger.yaml(Log.Level.trace, payload);
     final Token token = token();
 
     try {
