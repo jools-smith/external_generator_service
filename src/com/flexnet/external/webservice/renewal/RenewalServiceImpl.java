@@ -21,7 +21,7 @@ public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInt
   public PingResponse ping(final PingRequest payload) throws RenewalSeviceException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
 
     try {
       return getImplementorFactory().getDefaultImplementor(RenewalServiceInterface.class).ping(payload);
@@ -39,7 +39,7 @@ public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInt
   public RenewalResponse request(final RenewableEntitlementLineItems payload) throws RenewalSeviceException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
 
     try {
       final String tech = super.getLicenseTechnology(payload);

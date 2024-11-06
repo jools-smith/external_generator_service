@@ -17,7 +17,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public PingResponse ping(final PingRequest payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
 
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).ping(payload);
@@ -34,7 +34,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateEntitlementID(final Entitlement payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
 
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateEntitlementID(payload);
@@ -52,7 +52,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateLineItemID(final EntitlementLineItem payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateLineItemID(payload);
     }
@@ -68,7 +68,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateWebRegKey(final BulkEntitlement payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateWebRegKey(payload);
     }
@@ -84,7 +84,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateMaintenanceItemID(final MaintenanceItem payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateMaintenanceItemID(payload);
     }
@@ -100,7 +100,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateFulfillmentID(final FulfillmentRecord payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateFulfillmentID(payload);
     }
@@ -116,7 +116,7 @@ public class IdGeneratorServiceImpl extends ServiceBase implements IdGeneratorSe
   public Id generateConsolidatedLicenseID(final ConsolidatedLicenseRecord payload) throws IdGeneratorException {
     super.logger.in();
     super.logger.yaml(Log.Level.trace, payload);
-    final Token token = token();
+    final Token token = createDiagnosticsToken();
     try {
       return getImplementorFactory().getDefaultImplementor(IdGeneratorServiceInterface.class).generateConsolidatedLicenseID(payload);
     }

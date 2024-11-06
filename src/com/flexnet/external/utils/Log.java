@@ -12,29 +12,35 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-/**
- * 
- * @author juliansmith
- *
- */
-public class Log {
-  private static final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss.zzz");
+abstract class LogStatic {
+  static final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss.zzz");
 
-  public static final Level loggingLevel = Level.trace;
+  static AtomicReference<Log.Level> loggingLevel = new AtomicReference<>(Log.Level.trace);
 
-  public static boolean willLog(final Level level) {
-    return level.value >= loggingLevel.value;
+  public static boolean willLog(final Log.Level level) {
+    return level.value >= loggingLevel.get().value;
   }
 
-  public enum Level {
+  public static Log.Level setLoggingLevel(final Log.Level level) {
+    return loggingLevel.getAndSet(level);
+  }
+}
+
+public final class Log extends LogStatic {
+
+  /**
+   * LEVEL
+   */
+  public enum Level  {
 
     trace(0), debug(1), info(2), warning(3), error(4), severe(5);
 
     public final int value;
 
-    private Level(final int value) {
+    Level(final int value) {
       this.value = value;
     }
   }

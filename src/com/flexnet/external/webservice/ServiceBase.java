@@ -11,9 +11,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 class ServiceStatic {
-  static final String build = "1049";
+  static final String build = "1050";
 
-  static final String version = "2024.11.03";
+  static final String version = "2024.11.04";
 
   static final ImplementorFactory factory = new ImplementorFactory();
 
@@ -37,6 +37,9 @@ class ServiceStatic {
 
   // debuggery
   static {
+    // TODO: we can reduce this potentially -- once levels have been assessed
+    Log.setLoggingLevel(Log.Level.trace);
+
     Log.create(ServiceStatic.class).log(Log.Level.info, String.format("version | %s | %s", version, build));
   }
 }
@@ -95,7 +98,7 @@ public abstract class ServiceBase extends ServiceStatic {
     }
   }
 
-  protected Token token() {
+  protected Token createDiagnosticsToken() {
     final StackTraceElement frame = Thread.currentThread().getStackTrace()[2];
     
     return diagnostics.getToken(this.getClass(), frame.getMethodName());
