@@ -1,42 +1,36 @@
 
 package com.flexnet.external.webservice.renewal;
 
-import javax.jws.WebService;
-
 import com.flexnet.external.type.PingRequest;
 import com.flexnet.external.type.PingResponse;
 import com.flexnet.external.type.RenewableEntitlementLineItems;
 import com.flexnet.external.type.RenewalResponse;
-import com.flexnet.external.webservice.Diagnostics.Token;
+import com.flexnet.external.utils.Diagnostics.Token;
+import com.flexnet.external.utils.Log;
 import com.flexnet.external.webservice.ServiceBase;
+
+import javax.jws.WebService;
 
 @WebService(
         endpointInterface = "com.flexnet.external.webservice.renewal.RenewalServiceInterface",
         wsdlLocation = "WEB-INF/wsdl/schema/RenewalService.wsdl")
 
 public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInterface {
-  
-  public RenewalServiceImpl() {
-    super.logger.me(this);
-  }
-  
+
   @Override
   public PingResponse ping(final PingRequest payload) throws RenewalSeviceException {
     super.logger.in();
-    final Token token = token();
-    final Executor<PingRequest, Ping, PingResponse> executor = super.createExecutor();
+    super.logger.yaml(Log.Level.trace, payload);
+    final Token token = createDiagnosticsToken();
+
     try {
-      return executor
-              .execute(Endpoint.ping, payload)
-              .decode(Ping.class)
-              .encode(Ping.encode)
-              .value();
+      return getImplementorFactory().getDefaultImplementor(RenewalServiceInterface.class).ping(payload);
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
-      executor.commit();
+
       token.commit();
     }
   }
@@ -44,14 +38,19 @@ public class RenewalServiceImpl extends ServiceBase implements RenewalServiceInt
   @Override
   public RenewalResponse request(final RenewableEntitlementLineItems payload) throws RenewalSeviceException {
     super.logger.in();
-    final Token token = token();
+    super.logger.yaml(Log.Level.trace, payload);
+    final Token token = createDiagnosticsToken();
+
     try {
-      return execute(Void.class, Endpoint.RRI_request, payload).decode(RenewalResponse.class);
+      final String tech = super.getLicenseTechnology(payload);
+
+      return getImplementorFactory().getImplementor(tech, RenewalServiceInterface.class).request(payload);
     }
     catch (final Throwable t) {
       throw new RenewalSeviceException(t.getMessage(), this.serviceException.apply(t));
     }
     finally {
+
       token.commit();
     }
   }

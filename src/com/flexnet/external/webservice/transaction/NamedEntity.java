@@ -7,12 +7,16 @@ import java.util.UUID;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public abstract class NamedEntity extends TimedEntity {
-  @JsonInclude
+
   protected final String id = UUID.randomUUID().toString();
-  @JsonInclude
+
   protected final String name;
 
-  public NamedEntity(final String name) {
+  /**
+   *
+   * @param name
+   */
+  protected NamedEntity(final String name) {
     this.name = name;
   }
 }

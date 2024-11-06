@@ -1,21 +1,22 @@
 package com.flexnet.external.webservice;
 
+import com.flexnet.external.utils.Log;
 import com.flexnet.external.webservice.transaction.TransactionException;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import java.util.*;
-import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Listener implements ServletContextListener {
-  private final static ConsoleLogger logger = new ConsoleLogger(ServiceBase.class);
+  private final static Log logger = Log.create(ServiceBase.class);
 
   public static final AtomicReference<Listener> instance = new AtomicReference<>();
 
   private enum CallbackType {
     contextInitialized, contextDestroyed
   }
+
   private final Map<CallbackType, List<Runnable>> callbacks = new HashMap<>();
 
   public Listener() {
@@ -40,16 +41,26 @@ public class Listener implements ServletContextListener {
     registerContext(CallbackType.contextDestroyed, action);
   }
 
+  private void logAttributeNames(final ServletContextEvent event) {
+    final Enumeration<String> itt = event.getServletContext().getAttributeNames();
+    while (itt.hasMoreElements()) {
+      logger.log(Log.Level.trace, itt.nextElement());
+    }
+  }
+
   @Override
-  public void contextInitialized(ServletContextEvent servletContextEvent) {
+  public void contextInitialized(final ServletContextEvent event) {
     logger.in();
+
     try {
+      logAttributeNames(event);
+
       Optional.ofNullable(this.callbacks.get(CallbackType.contextInitialized)).ifPresent(list -> {
         list.forEach(Runnable::run);
       });
     }
     catch (final Throwable t){
-      logger.error(t);
+      logger.exception(t);
     }
     finally {
       logger.out();
@@ -57,15 +68,17 @@ public class Listener implements ServletContextListener {
   }
 
   @Override
-  public void contextDestroyed(ServletContextEvent servletContextEvent) {
+  public void contextDestroyed(final ServletContextEvent event) {
     logger.in();
     try {
+      logAttributeNames(event);
+
       Optional.ofNullable(this.callbacks.get(CallbackType.contextDestroyed)).ifPresent(list -> {
         list.forEach(Runnable::run);
       });
     }
     catch (final Throwable t){
-      logger.error(t);
+      logger.exception(t);
     }
     finally {
       logger.out();

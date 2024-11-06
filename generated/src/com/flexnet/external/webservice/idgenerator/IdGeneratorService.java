@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "IdGeneratorService", targetNamespace = "urn:idgenerator.webservice.external.flexnet.com", wsdlLocation = "file:/D:/development/extgenservice/schema/IdGeneratorService.wsdl")
+@WebServiceClient(name = "IdGeneratorService", targetNamespace = "urn:idgenerator.webservice.external.flexnet.com", wsdlLocation = "file:/D:/development/external_generator_service/schema/IdGeneratorService.wsdl")
 public class IdGeneratorService
     extends Service
 {
@@ -30,7 +30,7 @@ public class IdGeneratorService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/D:/development/extgenservice/schema/IdGeneratorService.wsdl");
+            url = new URL("file:/D:/development/external_generator_service/schema/IdGeneratorService.wsdl");
         } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }

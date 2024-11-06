@@ -1,28 +1,29 @@
 package com.flexnet.external.webservice.transaction;
 
+import com.flexnet.external.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
 public class TransactionException extends RuntimeException {
-  public static Function<Integer, String[]> frameDetails = (offset) -> {
-    final StackTraceElement frame = Thread.currentThread().getStackTrace()[offset];
-
-    return new String[] {
-            frame.getClassName(),
-            frame.getMethodName(),
-            String.valueOf(frame.getLineNumber()) };
-
-
-  };
+//  public static Function<Integer, String[]> frameDetails = (offset) -> {
+//    final StackTraceElement frame = Thread.currentThread().getStackTrace()[offset];
+//
+//    return new String[] {
+//            frame.getClassName(),
+//            frame.getMethodName(),
+//            String.valueOf(frame.getLineNumber())
+//    };
+//  };
 
   private static void assertNow(final String... parameters) {
 
     final List<String> list = new ArrayList<>();
 
     list.addAll(Arrays.asList(parameters));
-    list.addAll(Arrays.asList(frameDetails.apply(4)));
+    list.addAll(Arrays.asList(Utils.frameDetails.apply(4)));
 
     throw new TransactionException(String.join(" | ", list));
   }
