@@ -24,7 +24,7 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
     logger.in();
     return new Id() {
       {
-        this.id = DefaultIdGenerator.super.id();
+        this.id = "ENT_" + DefaultIdGenerator.super.id();
       }
     };
   }
@@ -34,7 +34,7 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
     logger.in();
     return new Id() {
       {
-        this.id = DefaultIdGenerator.super.id();
+        this.id = "ACT_" + DefaultIdGenerator.super.id();
       }
     };
   }
@@ -44,7 +44,7 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
     logger.in();
     return new Id() {
       {
-        this.id = DefaultIdGenerator.super.id();
+        this.id = "WEB_" + DefaultIdGenerator.super.id();
       }
     };
   }
@@ -54,7 +54,7 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
     logger.in();
     return new Id() {
       {
-        this.id = DefaultIdGenerator.super.id();
+        this.id = "MNT_" + DefaultIdGenerator.super.id();
       }
     };
   }
@@ -64,7 +64,7 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
     logger.in();
     return new Id() {
       {
-        this.id = DefaultIdGenerator.super.id();
+        this.id = "FID_" + DefaultIdGenerator.super.id();
       }
     };
   }
@@ -74,7 +74,7 @@ public final class DefaultIdGenerator extends ImplementorBase implements IdGener
     logger.in();
     return new Id() {
       {
-        this.id = DefaultIdGenerator.super.id();
+        this.id = "CID_" + DefaultIdGenerator.super.id();
       }
     };
   }

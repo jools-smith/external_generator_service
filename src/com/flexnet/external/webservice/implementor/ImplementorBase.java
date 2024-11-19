@@ -26,6 +26,10 @@ public abstract class ImplementorBase {
             .split("(?<=\\G.{4})"));
   }
 
+
+  /**
+   * 
+   */
   class Info {
     class OS {
       public String name;
@@ -45,7 +49,7 @@ public abstract class ImplementorBase {
     public String hostName;
     public String userName;
 
-
+    @SuppressWarnings("deprecation")
     Info() {
       this.system = new OS() {
         {
@@ -68,7 +72,6 @@ public abstract class ImplementorBase {
 
       this.hostName = SystemUtils.getHostName();
       this.userName = SystemUtils.getUserName();
-
     }
   }
 

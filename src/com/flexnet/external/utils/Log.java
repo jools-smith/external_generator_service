@@ -1,5 +1,6 @@
 package com.flexnet.external.utils;
 
+import javafx.scene.input.DataFormat;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -81,7 +83,8 @@ public final class Log extends LogStatic {
 
     if (Files.exists(Paths.get(root))) {
       try {
-        final File file = Paths.get(root, "revenera.log").toAbsolutePath().toFile();
+
+        final File file = Paths.get(root, LocalDate.now() + "-revenera.log").toAbsolutePath().toFile();
 
         FileUtils.writeLines(file, Collections.singletonList(content), true);
       }

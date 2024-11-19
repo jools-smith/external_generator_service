@@ -11,9 +11,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 class ServiceStatic {
-  static final String build = "1050";
+  static final String build = "1052";
 
-  static final String version = "2024.11.04";
+  static final String version = "2024.11.19";
 
   static final ImplementorFactory factory = new ImplementorFactory();
 
