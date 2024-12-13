@@ -1,14 +1,14 @@
 package com.flexnet.external.webservice.implementor;
 
 import com.flexnet.external.utils.Log;
-import com.flexnet.external.webservice.idgenerator.IdGeneratorServiceInterface;
 import com.flexnet.external.webservice.implementor.lmx.LmxLicenseGenerator;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
-import com.flexnet.external.webservice.renewal.RenewalServiceInterface;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ImplementorFactory {
@@ -16,56 +16,39 @@ public class ImplementorFactory {
 
   public final static String default_technology_name = "DEF";
 
-  private final List<Triple<String, Class<?>, ImplementorBase>> implementors = new ArrayList<>();
+  private final Map<String, LicenseGeneratorServiceInterface> implementors = new LinkedHashMap<>();
 
-  private void addImplementor(final Class<?> type, final ImplementorBase imp) {
-    if (type.isAssignableFrom(imp.getClass())) {
-      this.implementors.add(Triple.of(imp.technologyName(), type, imp));
-    }
-    else {
-      throw new RuntimeException(imp.getClass().getSimpleName() + " does not implement " + type.getSimpleName());
-    }
+  private void addImplementor(final ImplementorBase imp) {
+
+    logger.log(Log.Level.debug, imp.technologyName() + " -> " + imp.getClass().getSimpleName());
+
+    this.implementors.put(imp.technologyName(), (LicenseGeneratorServiceInterface) imp);
   }
 
   public ImplementorFactory() {
     logger.in();
     try {
       /* add default technology implementors */
-      addImplementor(IdGeneratorServiceInterface.class, new DefaultIdGenerator());
-      addImplementor(LicenseGeneratorServiceInterface.class, new DefaultLicenseGenerator());
-      addImplementor(RenewalServiceInterface.class, new DefaultRenewalService());
+      addImplementor(new DefaultLicenseGenerator());
 
       /* LMX */
-      addImplementor(LicenseGeneratorServiceInterface.class, new LmxLicenseGenerator());
+      addImplementor(new LmxLicenseGenerator());
     }
     catch (final Throwable t) {
       logger.exception(t);
     }
   }
 
-  public <T> T getDefaultImplementor(final Class<T> type) {
-
-    logger.array(Log.Level.info, "requested type", type.getSimpleName());
-
-    return type.cast(implementors.stream()
-            .filter(x -> x.getLeft().equals(default_technology_name))
-            .filter(x -> x.getMiddle() == type)
-            .findAny()
-            .get()
-            .getRight());
+  public LicenseGeneratorServiceInterface getDefaultImplementor() {
+    return this.implementors.get(default_technology_name);
   }
 
-  public <T> T getImplementor(final String technology, final Class<T> type) {
-    logger.array(Log.Level.info, "requested type", technology, type.getSimpleName());
-
-    final AtomicReference<T> implementor = new AtomicReference<>();
-
-    implementors.stream().filter(x -> x.getLeft().equals(technology)).filter(x -> x.getMiddle() == type).findAny().ifPresent(x -> {
-      logger.array(Log.Level.debug, "found type", x.getRight().getClass().getSimpleName());
-
-      implementor.set( type.cast( x.getRight() ) );
-    });
-
-    return implementor.get() != null ? implementor.get() : getDefaultImplementor(type);
+  public LicenseGeneratorServiceInterface getImplementor(final String technology) {
+    if (this.implementors.containsKey(technology)) {
+      return this.implementors.get(technology);
+    }
+    else {
+      return getDefaultImplementor();
+    }
   }
 }

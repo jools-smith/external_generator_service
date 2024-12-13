@@ -1,6 +1,5 @@
 package com.flexnet.external.utils;
 
-import javafx.scene.input.DataFormat;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -17,7 +16,9 @@ import java.util.GregorianCalendar;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
-abstract class LogStatic {
+
+public final class Log {
+
   static final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss.zzz");
 
   static AtomicReference<Log.Level> loggingLevel = new AtomicReference<>(Log.Level.trace);
@@ -29,10 +30,6 @@ abstract class LogStatic {
   public static Log.Level setLoggingLevel(final Log.Level level) {
     return loggingLevel.getAndSet(level);
   }
-}
-
-public final class Log extends LogStatic {
-
   /**
    * LEVEL
    */
@@ -47,7 +44,7 @@ public final class Log extends LogStatic {
     }
   }
 
-  static class Context {
+  private class Context {
     final StackTraceElement element = new Throwable().getStackTrace()[3];
     final Calendar calendar = GregorianCalendar.getInstance();
 
@@ -69,7 +66,7 @@ public final class Log extends LogStatic {
   }
 
   private final Class<?> type;
-  
+
   private Log(final Class<?> cls) {
     this.type = cls;
   }
@@ -83,7 +80,6 @@ public final class Log extends LogStatic {
 
     if (Files.exists(Paths.get(root))) {
       try {
-
         final File file = Paths.get(root, LocalDate.now() + "-revenera.log").toAbsolutePath().toFile();
 
         FileUtils.writeLines(file, Collections.singletonList(content), true);
@@ -125,7 +121,7 @@ public final class Log extends LogStatic {
 
   public void json(final Level level, final Object obj) {
     try {
-      log(level, Utils.safeSerialize(obj));
+      log(level, Utils.safeSerializeJsonIndented(obj));
     }
     catch (final Throwable e) {
       exception(e);

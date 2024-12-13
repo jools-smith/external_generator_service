@@ -33,16 +33,6 @@
                  classname="com.sun.tools.ws.ant.WsImport"
                  classpathref="licservice.classpath"/>
 
-        <jaxws wsdl="${BASE}/schema/IdGeneratorService.wsdl"
-               sourcedestdir="${generated-src}"
-               keep="true"
-               binding="${BASE}/schema/common-types.xml"
-               xnocompile="true">
-            <depends file="${BASE}/schema/IdGeneratorService.wsdl"/>
-            <produces dir="${generated-src}/com/flexnet/external/webservice/idgenerator"/>
-            <xjcarg value="-Xcollection-setter-injector"/>
-        </jaxws>
-
         <jaxws wsdl="${BASE}/schema/LicenseGeneratorService.wsdl"
                sourcedestdir="${generated-src}"
                keep="true"
@@ -53,15 +43,6 @@
             <xjcarg value="-Xcollection-setter-injector"/>
         </jaxws>
 
-        <jaxws wsdl="${BASE}/schema/RenewalService.wsdl"
-               sourcedestdir="${generated-src}"
-               keep="true"
-               binding="${BASE}/schema/common-types.xml"
-               xnocompile="true">
-            <depends file="${BASE}/schema/RenewalService.wsdl"/>
-            <produces dir="${generated-src}/com/flexnet/external/webservice/renewalservice"/>
-            <xjcarg value="-Xcollection-setter-injector"/>
-        </jaxws>
     </target>
 
     <target name="compile"
@@ -70,12 +51,14 @@
         <javac srcdir="${generated-src}"
                destdir="${build}"
                includeantruntime="false"
-               debug="true"/>
+               debug="true"
+               encoding="utf-8"/>
         <javac srcdir="${src}"
                destdir="${build}"
                includeantruntime="false"
                debug="true"
-               classpathref="licservice.classpath"/>
+               classpathref="licservice.classpath"
+               encoding="utf-8"/>
     </target>
 
     <target name="build"

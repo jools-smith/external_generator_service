@@ -1,12 +1,40 @@
 package com.flexnet.external.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
 import java.util.function.Function;
 
 public class Utils {
+
+  public static final  ObjectMapper json_mapper_indented = new ObjectMapper()
+          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
+          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+          .enable(SerializationFeature.INDENT_OUTPUT);
+
+  public static final  ObjectMapper json_mapper = new ObjectMapper()
+          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
+          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+  public static final  ObjectMapper yaml_mapper = new ObjectMapper(new YAMLFactory())
+          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
+          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
+          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+  static {
+    json_mapper_indented.findAndRegisterModules();
+    json_mapper.findAndRegisterModules();
+    yaml_mapper.findAndRegisterModules();
+  }
+
   public static final Function<Integer, String[]> frameDetails = (offset) -> {
     final StackTraceElement frame = Thread.currentThread().getStackTrace()[offset];
 
@@ -16,6 +44,12 @@ public class Utils {
             String.valueOf(frame.getLineNumber())
     };
   };
+
+  public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-MM-dd");
+
+  public static Date gregorianCalendarToDate(final XMLGregorianCalendar calendar) {
+    return calendar.toGregorianCalendar().getTime();
+  }
 
   public static String abbreviatePackageName(final String name, final int limit) {
 
@@ -37,38 +71,25 @@ public class Utils {
     return str;
   }
 
-  public static final  ObjectMapper json_mapper_indented = new ObjectMapper()
-          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-          .enable(SerializationFeature.INDENT_OUTPUT);
-
-  public static final  ObjectMapper json_mapper = new ObjectMapper()
-          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-  public static final  ObjectMapper yaml_mapper = new ObjectMapper(new YAMLFactory())
-          .enable(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS)
-          .enable(SerializationFeature.WRITE_ENUMS_USING_TO_STRING)
-          .enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-  public static String safeSerialize(final Object payload) {
+  static String serialize(final ObjectMapper mapper, final Object payload) {
     try {
-      return json_mapper.writeValueAsString(payload);
+      return mapper.writeValueAsString(payload);
     }
     catch (final Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
+  public static String safeSerializeJson(final Object payload) {
+    return serialize(json_mapper, payload);
+  }
+
+  public static String safeSerializeJsonIndented(final Object payload) {
+    return serialize(json_mapper_indented, payload);
+  }
+
   public static String safeSerializeYaml(final Object payload) {
-    try {
-      return yaml_mapper.writeValueAsString(payload);
-    }
-    catch (final Throwable t) {
-      throw new RuntimeException(t);
-    }
+    return serialize(yaml_mapper, payload);
   }
 
   public static String frameDetails(final StackTraceElement frame) {
@@ -79,8 +100,11 @@ public class Utils {
             java.lang.String.valueOf(frame.getLineNumber()));
   }
 
-  static {
-    json_mapper_indented.findAndRegisterModules();
-    json_mapper.findAndRegisterModules();
+  public static String jsonToBase64(final Object payload) {
+    return Base64.getEncoder().encodeToString(safeSerializeJsonIndented(payload).getBytes());
+  }
+
+  public static String yamlToBase64(final Object payload) {
+    return Base64.getEncoder().encodeToString(safeSerializeYaml(payload).getBytes());
   }
 }
