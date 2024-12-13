@@ -19,17 +19,6 @@ public abstract class ImplementorBase {
 
   protected final Log logger = Log.create(this.getClass());
 
-  protected String id() {
-    return String.join("-", UUID
-            .randomUUID()
-            .toString().replace("-","")
-            .split("(?<=\\G.{4})"));
-  }
-
-
-  /**
-   * 
-   */
   class Info {
     class OS {
       public String name;

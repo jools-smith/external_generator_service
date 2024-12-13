@@ -10,10 +10,12 @@ import com.flexnet.external.webservice.implementor.ImplementorFactory;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-class ServiceStatic {
-  static final String build = "1052";
 
-  static final String version = "2024.11.19";
+public abstract class ServiceBase {
+
+  static final String build = "2007";
+
+  static final String version = "2024.11.21";
 
   static final ImplementorFactory factory = new ImplementorFactory();
 
@@ -40,11 +42,8 @@ class ServiceStatic {
     // TODO: we can reduce this potentially -- once levels have been assessed
     Log.setLoggingLevel(Log.Level.trace);
 
-    Log.create(ServiceStatic.class).log(Log.Level.info, String.format("version | %s | %s", version, build));
+    Log.create(ServiceBase.class).log(Log.Level.info, String.format("version | %s | %s", version, build));
   }
-}
-
-public abstract class ServiceBase extends ServiceStatic {
 
   protected final Log logger = Log.create(this.getClass());
 
@@ -52,6 +51,11 @@ public abstract class ServiceBase extends ServiceStatic {
     this.logger.in();
   }
 
+  /**
+   *
+   * @param obj request payload from which to assess the FNO license technology name
+   * @return FNO license technology name
+   */
   protected String getLicenseTechnology(final Object obj) {
     final AtomicReference<LicenseTechnology> tech = new AtomicReference<>();
 

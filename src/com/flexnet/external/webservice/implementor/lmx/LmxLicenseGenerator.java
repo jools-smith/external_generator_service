@@ -15,18 +15,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public final class LmxLicenseGenerator extends ImplementorBase implements LicenseGeneratorServiceInterface {
-  static final SimpleDateFormat yyyyymmdd = new SimpleDateFormat("yyyy-MM-dd");
+
   private final static Log logger = Log.create(LmxLicenseGenerator.class);
 
-  static String gregorianCalendarToYYYYMMDD(final XMLGregorianCalendar calendar) {
-    logger.in();
-    if (calendar == null) {
-      return null;
-    }
-    else {
-      return yyyyymmdd.format(calendar.toGregorianCalendar().getTime());
-    }
-  }
+//  static String gregorianCalendarToYYYYMMDD(final XMLGregorianCalendar calendar) {
+//    return Utils.yyyy_mm_dd.format(Utils.gregorianCalendarToDate(calendar));
+//  }
 
   static Optional<Map<String, String>> get_attributes(final List<CustomAttribute> attributes) {
     logger.in();
@@ -39,7 +33,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static Optional<Map<String, String>> from_product_category_attribute_list(final List<ProductCategoryAttributeValue> list) {
-    logger.in();
+//    logger.in();
     if (list == null) {
       return Optional.empty();
     }
@@ -50,7 +44,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static Optional<Map<String, String>> from_attribute_list(final List<CustomAttribute> list) {
-    logger.in();
+//    logger.in();
     if (list == null) {
       return Optional.empty();
     }
@@ -121,30 +115,30 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     fromAttributeSet(request.getLicenseModel().getFulfillmentTimeAttributes()).ifPresent(attributes::putAll);
     fromAttributeSet(request.getLicenseModel().getModelTimeAttributes()).ifPresent(attributes::putAll);
     //TODO:DEBUG
-    logger.log(Log.Level.debug, "attributes: " + attributes);
+//    logger.log(Log.Level.debug, "attributes: " + attributes);
 
-    final String startDate = gregorianCalendarToYYYYMMDD(request.getStartDate());
+    final String startDate = Utils.yyyy_mm_dd.format(Utils.gregorianCalendarToDate(request.getStartDate()));
     //TODO:DEBUG
-    logger.log(Log.Level.debug, "startDate: " + startDate);
+//    logger.log(Log.Level.debug, "startDate: " + startDate);
 
-    final String endDate = gregorianCalendarToYYYYMMDD(request.getExpirationDate());
+    final String endDate = Utils.yyyy_mm_dd.format(Utils.gregorianCalendarToDate(request.getExpirationDate()));
     //TODO:DEBUG
-    logger.log(Log.Level.debug, "endDate: " + endDate);
+//    logger.log(Log.Level.debug, "endDate: " + endDate);
 
     //TODO:DEBUG
-    logger.log(Log.Level.debug, "processing products");
+//    logger.log(Log.Level.debug, "processing products");
     request.getEntitledProducts().forEach(prod -> {
       //TODO:DEBUG
-      logger.log(Log.Level.debug, "product: " + prod.getName());
+//      logger.log(Log.Level.debug, "product: " + prod.getName());
 
       //quantity per copy
       final int multiplier = prod.getQuantityPerCopy();
       //TODO:DEBUG
-      logger.log(Log.Level.debug, "multiplier: " + multiplier);
+//      logger.log(Log.Level.debug, "multiplier: " + multiplier);
 
       prod.getFeatures().forEach(feature -> {
         //TODO:DEBUG
-        logger.log(Log.Level.debug, "feature: " + feature.getName());
+//        logger.log(Log.Level.debug, "feature: " + feature.getName());
 
         final FeatureBuilder featureBuilder = licenseBuilder.createFeatureBuilder();
 
@@ -174,7 +168,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static Optional<Map<String, String>> fromAttributeSet(final AttributeSet set) {
-    logger.in();
+//    logger.in();
 
     try {
       if (set == null) {
@@ -184,7 +178,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
       return Optional.of(set.getAttributes().stream().filter(att -> att.getValue() != null).collect(Collectors.toMap(CustomAttributeDescriptor::getName, att -> att.getValue().replace(',', '|'))));
     }
     finally {
-      logger.out();
+//      logger.out();
     }
   }
 
