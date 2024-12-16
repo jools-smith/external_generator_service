@@ -3,24 +3,21 @@ package com.flexnet.external.webservice.implementor.lmx;
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
+import com.flexnet.external.utils.GeneratorImplementor;
 import com.flexnet.external.webservice.implementor.ImplementorBase;
-import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class LmxLicenseGenerator extends ImplementorBase implements LicenseGeneratorServiceInterface {
+@GeneratorImplementor(technology="LMX")
+public final class LmxLicenseGenerator extends ImplementorBase {
 
   private final static Log logger = Log.create(LmxLicenseGenerator.class);
-
-//  static String gregorianCalendarToYYYYMMDD(final XMLGregorianCalendar calendar) {
-//    return Utils.yyyy_mm_dd.format(Utils.gregorianCalendarToDate(calendar));
-//  }
 
   static Optional<Map<String, String>> get_attributes(final List<CustomAttribute> attributes) {
     logger.in();
@@ -33,7 +30,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static Optional<Map<String, String>> from_product_category_attribute_list(final List<ProductCategoryAttributeValue> list) {
-//    logger.in();
+    //    logger.in();
     if (list == null) {
       return Optional.empty();
     }
@@ -44,7 +41,7 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static Optional<Map<String, String>> from_attribute_list(final List<CustomAttribute> list) {
-//    logger.in();
+    //    logger.in();
     if (list == null) {
       return Optional.empty();
     }
@@ -52,17 +49,6 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     logger.log(Log.Level.info, Utils.safeSerializeYaml(list));
 
     return Optional.of(list.stream().collect(Collectors.toMap(CustomAttribute::getName, att -> String.join("|", att.getAttributes()))));
-  }
-
-  // EXCEPTION
-  private <T> T except(final Class<T> type, final String message) {
-    throw new RuntimeException(message);
-  }
-
-  @Override
-  public PingResponse ping(final PingRequest request) {
-    logger.in();
-    return super.ping(request);
   }
 
   @Override
@@ -94,18 +80,17 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   public GeneratorResponse generateLicense(final GeneratorRequest request) {
     final LicenseBuilder licenseBuilder = new LicenseBuilder();
 
-    licenseBuilder
-            .setAccount(request.getSoldTo().getDisplayName())
-            .setLicense(request.getActivationID())
-            .setCreatedBy(request.getLoggedInUser().getDisplayName())
-            .setGeneratedOn(Instant.now().toString())
-            .setCreationDate(LocalDate.now().toString());
+    licenseBuilder.setAccount(request.getSoldTo().getDisplayName()).setLicense(request.getActivationID()).setCreatedBy(request.getLoggedInUser().getDisplayName()).setGeneratedOn(Instant.now().toString()).setCreationDate(LocalDate.now().toString());
 
-    Optional.ofNullable(request.getCustomHost()).flatMap(host -> host.getHostAttributeValues().stream().findFirst()).ifPresent(att -> {
+    Optional.ofNullable(request.getCustomHost())
+            .flatMap(host -> host.getHostAttributeValues().stream()
+                    .findFirst()).ifPresent(att -> {
       licenseBuilder.setType(att.getValue());
     });
 
-    Optional.ofNullable(request.getSoldToUsers()).flatMap(users -> users.stream().findFirst()).ifPresent(user -> {
+    Optional.ofNullable(request.getSoldToUsers())
+            .flatMap(users -> users.stream()
+                    .findFirst()).ifPresent(user -> {
       licenseBuilder.setCustomer(user.getDisplayName());
     });
 
@@ -114,51 +99,36 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
     fromAttributeSet(request.getLicenseModel().getEntitlementTimeAttributes()).ifPresent(attributes::putAll);
     fromAttributeSet(request.getLicenseModel().getFulfillmentTimeAttributes()).ifPresent(attributes::putAll);
     fromAttributeSet(request.getLicenseModel().getModelTimeAttributes()).ifPresent(attributes::putAll);
-    //TODO:DEBUG
-//    logger.log(Log.Level.debug, "attributes: " + attributes);
 
     final String startDate = Utils.yyyy_mm_dd.format(Utils.gregorianCalendarToDate(request.getStartDate()));
-    //TODO:DEBUG
-//    logger.log(Log.Level.debug, "startDate: " + startDate);
 
     final String endDate = Utils.yyyy_mm_dd.format(Utils.gregorianCalendarToDate(request.getExpirationDate()));
-    //TODO:DEBUG
-//    logger.log(Log.Level.debug, "endDate: " + endDate);
 
-    //TODO:DEBUG
-//    logger.log(Log.Level.debug, "processing products");
+
     request.getEntitledProducts().forEach(prod -> {
-      //TODO:DEBUG
-//      logger.log(Log.Level.debug, "product: " + prod.getName());
 
       //quantity per copy
       final int multiplier = prod.getQuantityPerCopy();
-      //TODO:DEBUG
-//      logger.log(Log.Level.debug, "multiplier: " + multiplier);
+
 
       prod.getFeatures().forEach(feature -> {
-        //TODO:DEBUG
-//        logger.log(Log.Level.debug, "feature: " + feature.getName());
 
         final FeatureBuilder featureBuilder = licenseBuilder.createFeatureBuilder();
 
         attributes.forEach(featureBuilder::withMetadataAsString);
 
-        featureBuilder.withFeatureName(feature.getName());
-        featureBuilder.withFeatureVersion(feature.getVersion());
-        featureBuilder.withFeatureCount(feature.getCount() * multiplier);
-        featureBuilder.withStartDate(startDate);
-        featureBuilder.withEndDate(endDate);
-        featureBuilder.seal();
+        featureBuilder.withFeatureName(feature.getName())
+                .withFeatureVersion(feature.getVersion())
+                .withFeatureCount(feature.getCount() * multiplier)
+                .withStartDate(startDate)
+                .withEndDate(endDate)
+                .seal();
       });
     });
 
     return new GeneratorResponse() {
       {
-        this.licenseFiles = makeLicenseFiles(
-                request.getLicenseTechnology().getLicenseFileDefinitions(),
-                licenseBuilder.generate(),
-                null);
+        this.licenseFiles = makeLicenseFiles(request.getLicenseTechnology().getLicenseFileDefinitions(), licenseBuilder.generate(), null);
 
         setLicenseText("#Generated by external server at " + Instant.now().toString());
 
@@ -168,21 +138,17 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   }
 
   static Optional<Map<String, String>> fromAttributeSet(final AttributeSet set) {
-//    logger.in();
 
-    try {
-      if (set == null) {
-        return Optional.empty();
-      }
+    if (set == null) {
+      return Optional.empty();
+    }
 
-      return Optional.of(set.getAttributes().stream().filter(att -> att.getValue() != null).collect(Collectors.toMap(CustomAttributeDescriptor::getName, att -> att.getValue().replace(',', '|'))));
-    }
-    finally {
-//      logger.out();
-    }
+    return Optional.of(set.getAttributes().stream()
+            .filter(att -> att.getValue() != null)
+            .collect(Collectors
+                    .toMap(CustomAttributeDescriptor::getName, att -> att.getValue().replace(',', '|'))));
+
   }
-
-
 
   @Override
   public ConsolidatedLicense consolidateFulfillments(final FulfillmentRecordSet fulfillmentRecordset) {
@@ -204,6 +170,11 @@ public final class LmxLicenseGenerator extends ImplementorBase implements Licens
   @Override
   public LicenseFileDefinitionMap generateLicenseFilenames(final GeneratorRequest fileRec) {
     return except(LicenseFileDefinitionMap.class, "generateLicenseFilenames not implemented");
+  }
+
+  // EXCEPTION
+  private <T> T except(final Class<T> type, final String message) {
+    throw new RuntimeException(message);
   }
 
   @Override

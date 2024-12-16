@@ -13,9 +13,9 @@ import java.util.function.Function;
 
 public abstract class ServiceBase {
 
-  static final String build = "2007";
+  static final String build = "3001";
 
-  static final String version = "2024.11.21";
+  static final String version = "2024.12.16";
 
   static final ImplementorFactory factory = new ImplementorFactory();
 
@@ -37,7 +37,6 @@ public abstract class ServiceBase {
     return factory;
   }
 
-  // debuggery
   static {
     // TODO: we can reduce this potentially -- once levels have been assessed
     Log.setLoggingLevel(Log.Level.trace);

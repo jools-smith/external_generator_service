@@ -7,6 +7,7 @@ import com.flexnet.external.type.PingResponse;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.ServiceBase;
+import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.time.Instant;
@@ -15,7 +16,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class ImplementorBase {
+
+public abstract class ImplementorBase implements LicenseGeneratorServiceInterface {
 
   protected final Log logger = Log.create(this.getClass());
 
@@ -97,7 +99,8 @@ public abstract class ImplementorBase {
     };
   }
 
-  protected PingResponse ping(final PingRequest request) {
+  @Override
+  public PingResponse ping(final PingRequest request) {
     logger.in();
 
     return new PingResponse() {
@@ -106,7 +109,12 @@ public abstract class ImplementorBase {
 
         this.info = Utils.safeSerializeYaml(new Info());
 
-        this.str = String.format("%s | %s | %s", logger.type().getSimpleName(), ServiceBase.getVersion(), ServiceBase.getBuild());
+        this.str = String.format("%s | %s | %s | %s",
+                logger.type().getSimpleName(),
+                ServiceBase.getVersion(),
+                ServiceBase.getBuild(),
+                technologyName());
+
         this.processedTime = Instant.now().toString();
       }
     };

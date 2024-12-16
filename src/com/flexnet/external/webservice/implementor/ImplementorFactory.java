@@ -1,22 +1,18 @@
 package com.flexnet.external.webservice.implementor;
 
+import com.flexnet.external.utils.AnnotationManager;
+import com.flexnet.external.utils.GeneratorImplementor;
 import com.flexnet.external.utils.Log;
-import com.flexnet.external.webservice.implementor.lmx.LmxLicenseGenerator;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
-import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.*;
 
 public class ImplementorFactory {
   private final static Log logger = Log.create(ImplementorFactory.class);
 
   public final static String default_technology_name = "DEF";
 
-  private final Map<String, LicenseGeneratorServiceInterface> implementors = new LinkedHashMap<>();
+  private final Map<String, LicenseGeneratorServiceInterface> implementors = new HashMap<>();
 
   private void addImplementor(final ImplementorBase imp) {
 
@@ -28,11 +24,26 @@ public class ImplementorFactory {
   public ImplementorFactory() {
     logger.in();
     try {
-      /* add default technology implementors */
-      addImplementor(new DefaultLicenseGenerator());
+      final AnnotationManager manager = new AnnotationManager();
 
-      /* LMX */
-      addImplementor(new LmxLicenseGenerator());
+      final List<String> files = manager.findClassFilesInPackage(ImplementorBase.class);
+
+      for (final String typename : files) {
+
+        final Class<?> type = Class.forName(typename);
+
+        if (type.isAnnotationPresent(GeneratorImplementor.class)) {
+
+          final GeneratorImplementor ann = type.getAnnotation(GeneratorImplementor.class);
+
+          logger.array(Log.Level.debug, "located annotated implementor", ann.technology(), type.getName());
+
+          if (ImplementorBase.class.isAssignableFrom(type)) {
+
+            addImplementor((ImplementorBase) type.newInstance());
+          }
+        }
+      }
     }
     catch (final Throwable t) {
       logger.exception(t);

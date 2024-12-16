@@ -1,23 +1,17 @@
 package com.flexnet.external.webservice.implementor;
 
 import com.flexnet.external.type.*;
+import com.flexnet.external.utils.GeneratorImplementor;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
 import com.flexnet.external.webservice.keygenerator.LicGeneratorException;
-import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 
-public final class DefaultLicenseGenerator extends ImplementorBase implements LicenseGeneratorServiceInterface {
+@GeneratorImplementor(technology = "DEF")
+public final class DefaultLicenseGenerator extends ImplementorBase {
   private final static Log logger = Log.create(DefaultLicenseGenerator.class);
-
-  @Override
-  public PingResponse ping(final PingRequest request) {
-    logger.in();
-    return super.ping(request);
-  }
 
   @Override
   public String technologyName() {
