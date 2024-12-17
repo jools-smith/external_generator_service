@@ -14,40 +14,11 @@ public class ImplementorFactory {
 
   private final Map<String, LicenseGeneratorServiceInterface> implementors = new HashMap<>();
 
-  private void addImplementor(final ImplementorBase imp) {
+  public void addImplementor(final ImplementorBase imp) {
 
     logger.log(Log.Level.debug, imp.technologyName() + " -> " + imp.getClass().getSimpleName());
 
     this.implementors.put(imp.technologyName(), (LicenseGeneratorServiceInterface) imp);
-  }
-
-  public ImplementorFactory() {
-    logger.in();
-    try {
-      final AnnotationManager manager = new AnnotationManager();
-
-      final List<String> files = manager.findClassFilesInPackage(ImplementorBase.class);
-
-      for (final String typename : files) {
-
-        final Class<?> type = Class.forName(typename);
-
-        if (type.isAnnotationPresent(GeneratorImplementor.class)) {
-
-          final GeneratorImplementor ann = type.getAnnotation(GeneratorImplementor.class);
-
-          logger.array(Log.Level.debug, "located annotated implementor", ann.technology(), type.getName());
-
-          if (ImplementorBase.class.isAssignableFrom(type)) {
-
-            addImplementor((ImplementorBase) type.newInstance());
-          }
-        }
-      }
-    }
-    catch (final Throwable t) {
-      logger.exception(t);
-    }
   }
 
   public LicenseGeneratorServiceInterface getDefaultImplementor() {

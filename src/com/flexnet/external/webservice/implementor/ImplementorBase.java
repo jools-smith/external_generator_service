@@ -6,7 +6,7 @@ import com.flexnet.external.type.PingRequest;
 import com.flexnet.external.type.PingResponse;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
-import com.flexnet.external.webservice.ServiceBase;
+import com.flexnet.external.webservice.Application;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 import org.apache.commons.lang3.SystemUtils;
 
@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+
 
 
 public abstract class ImplementorBase implements LicenseGeneratorServiceInterface {
@@ -111,8 +111,8 @@ public abstract class ImplementorBase implements LicenseGeneratorServiceInterfac
 
         this.str = String.format("%s | %s | %s | %s",
                 logger.type().getSimpleName(),
-                ServiceBase.getVersion(),
-                ServiceBase.getBuild(),
+                Application.getInstance().getVersionDate(),
+                Application.getInstance().getBuild(),
                 technologyName());
 
         this.processedTime = Instant.now().toString();

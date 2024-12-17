@@ -13,35 +13,12 @@ import java.util.function.Function;
 
 public abstract class ServiceBase {
 
-  static final String build = "3001";
 
-  static final String version = "2024.12.16";
 
-  static final ImplementorFactory factory = new ImplementorFactory();
-
-  static final Diagnostics diagnostics = new Diagnostics();
-
-  public static String getVersion() {
-    return version;
-  }
-
-  public static String getBuild() {
-    return build;
-  }
-
-  public static Diagnostics getDiagnostics() {
-    return diagnostics;
-  }
-
-  public static ImplementorFactory getImplementorFactory() {
-    return factory;
-  }
 
   static {
     // TODO: we can reduce this potentially -- once levels have been assessed
     Log.setLoggingLevel(Log.Level.trace);
-
-    Log.create(ServiceBase.class).log(Log.Level.info, String.format("version | %s | %s", version, build));
   }
 
   protected final Log logger = Log.create(this.getClass());
@@ -104,7 +81,7 @@ public abstract class ServiceBase {
   protected Token createDiagnosticsToken() {
     final StackTraceElement frame = Thread.currentThread().getStackTrace()[2];
     
-    return diagnostics.getToken(this.getClass(), frame.getMethodName());
+    return Application.getInstance().getDiagnostics().getToken(this.getClass(), frame.getMethodName());
   }
   
   public Function<Throwable, SvcException> serviceException = (throwable) -> new SvcException() {

@@ -10,15 +10,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class AnnotationManager {
+  static final String class_suffix = ".class";
 
   private final String root;
 
   public AnnotationManager() throws URISyntaxException {
-    root = Paths.get(Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).toURI()).toFile().toString() + File.separator;
+    final URL url = Objects.requireNonNull(
+            Thread.currentThread()
+                    .getContextClassLoader()
+                    .getResource(""));
 
+    this.root =  Paths.get(url.toURI()).toFile() + File.separator;
   }
-
-  static final String class_suffix = ".class";
 
   public Optional<List<File>> getClassFilesInPath(final File directory) {
     final File[] files = directory.listFiles();

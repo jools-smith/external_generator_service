@@ -3,6 +3,7 @@ package com.flexnet.external.webservice.keygenerator;
 import com.flexnet.external.type.*;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.utils.Log;
+import com.flexnet.external.webservice.Application;
 import com.flexnet.external.webservice.ServiceBase;
 
 import javax.jws.WebService;
@@ -19,7 +20,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     super.logger.yaml(Log.Level.trace, payload);
     final Token token = createDiagnosticsToken();
     try {
-      return getImplementorFactory().getDefaultImplementor().ping(payload);
+      return Application.getInstance().getImplementorFactory().getDefaultImplementor().ping(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -37,7 +38,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     try {
       final String tech = super.getLicenseTechnology(payload);
 
-      return getImplementorFactory().getImplementor(tech).validateProduct(payload);
+      return Application.getInstance().getImplementorFactory().getImplementor(tech).validateProduct(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -55,7 +56,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     try {
       final String tech = super.getLicenseTechnology(payload);
 
-      return getImplementorFactory().getImplementor(tech).validateLicenseModel(payload);
+      return Application.getInstance().getImplementorFactory().getImplementor(tech).validateLicenseModel(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -74,7 +75,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     try {
       final String tech = super.getLicenseTechnology(payload);
 
-      return getImplementorFactory().getImplementor(tech).generateLicense(payload);
+      return Application.getInstance().getImplementorFactory().getImplementor(tech).generateLicense(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -92,7 +93,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     try {
       final String tech = super.getLicenseTechnology(payload);
 
-      return getImplementorFactory().getImplementor(tech).consolidateFulfillments(payload);
+      return Application.getInstance().getImplementorFactory().getImplementor(tech).consolidateFulfillments(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -112,7 +113,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     try {
       final String tech = super.getLicenseTechnology(payload);
 
-      return getImplementorFactory().getImplementor(tech).generateLicenseFilenames(payload);
+      return Application.getInstance().getImplementorFactory().getImplementor(tech).generateLicenseFilenames(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -133,7 +134,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     try {
       final String tech = super.getLicenseTechnology(payload);
 
-      return getImplementorFactory().getImplementor(tech).generateConsolidatedLicenseFilenames(payload);
+      return Application.getInstance().getImplementorFactory().getImplementor(tech).generateConsolidatedLicenseFilenames(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
@@ -150,7 +151,7 @@ public class LicenseGeneratorServiceImpl extends ServiceBase implements LicenseG
     final Token token = createDiagnosticsToken();
 
     try {
-      return getImplementorFactory().getDefaultImplementor().generateCustomHostIdentifier(payload);
+      return Application.getInstance().getImplementorFactory().getDefaultImplementor().generateCustomHostIdentifier(payload);
     }
     catch (final Throwable t) {
       throw new LicGeneratorException(t.getMessage(), this.serviceException.apply(t));
