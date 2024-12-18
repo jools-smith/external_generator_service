@@ -112,7 +112,7 @@ public abstract class ImplementorBase implements LicenseGeneratorServiceInterfac
         this.str = String.format("%s | %s | %s | %s",
                 logger.type().getSimpleName(),
                 Application.getInstance().getVersionDate(),
-                Application.getInstance().getBuild(),
+                Application.getInstance().getBuildSequence(),
                 technologyName());
 
         this.processedTime = Instant.now().toString();

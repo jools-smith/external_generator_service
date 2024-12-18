@@ -77,7 +77,7 @@ class FeatureBuilder {
     TOKEN_DEPENDENCY,
     USERBASED,
     VENDOR,
-    VERSION;
+    VERSION
   }
 
   static class Header {
@@ -120,18 +120,10 @@ class FeatureBuilder {
     }
 
     public String generate() {
-      final StringBuilder bfr = new StringBuilder();
 
-      bfr.append(String.format("# Type:%s", this.type)).append(lf);
-      bfr.append(String.format("# Account:%s", this.account)).append(lf);
-      bfr.append(String.format("# Creation Date:%s", this.creationDate)).append(lf);
-      bfr.append(String.format("# Customer:%s", this.customer)).append(lf);
-      bfr.append(String.format("# License Created:%s", this.createdBy)).append(lf);
-      bfr.append(String.format("# License:%s", this.license)).append(lf);
-      bfr.append(String.format("# Country:%s", this.country)).append(lf);
-      bfr.append(String.format("# Generated on:%s", this.type)).append(lf);
+      final String bfr = String.format("# Type:%s", this.type) + lf + String.format("# Account:%s", this.account) + lf + String.format("# Creation Date:%s", this.creationDate) + lf + String.format("# Customer:%s", this.customer) + lf + String.format("# License Created:%s", this.createdBy) + lf + String.format("# License:%s", this.license) + lf + String.format("# Country:%s", this.country) + lf + String.format("# Generated on:%s", this.type) + lf;
 
-      return bfr.toString();
+      return bfr;
     }
   }
 

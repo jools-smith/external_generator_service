@@ -45,9 +45,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "ping")
     @WebResult(name = "pingResponse", targetNamespace = "urn:com.flexnet.external.type", partName = "response")
-    public PingResponse ping(
-        @WebParam(name = "pingRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "request")
-        PingRequest request)
+    PingResponse ping(@WebParam(name = "pingRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "request") PingRequest request)
         throws LicGeneratorException
     ;
 
@@ -60,9 +58,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "validateProduct")
     @WebResult(name = "Status", targetNamespace = "urn:com.flexnet.external.type", partName = "response")
-    public Status validateProduct(
-        @WebParam(name = "ProductRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "product")
-        ProductRequest product)
+    Status validateProduct(@WebParam(name = "ProductRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "product") ProductRequest product)
         throws LicGeneratorException
     ;
 
@@ -75,9 +71,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "validateLicenseModel")
     @WebResult(name = "Status", targetNamespace = "urn:com.flexnet.external.type", partName = "response")
-    public Status validateLicenseModel(
-        @WebParam(name = "LicenseModelRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "model")
-        LicenseModelRequest model)
+    Status validateLicenseModel(@WebParam(name = "LicenseModelRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "model") LicenseModelRequest model)
         throws LicGeneratorException
     ;
 
@@ -90,9 +84,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "generateLicense")
     @WebResult(name = "GeneratorResponse", targetNamespace = "urn:com.flexnet.external.type", partName = "generatedLicense")
-    public GeneratorResponse generateLicense(
-        @WebParam(name = "GeneratorRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "request")
-        GeneratorRequest request)
+    GeneratorResponse generateLicense(@WebParam(name = "GeneratorRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "request") GeneratorRequest request)
         throws LicGeneratorException
     ;
 
@@ -105,9 +97,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "consolidateFulfillments")
     @WebResult(name = "ConsolidatedLicense", targetNamespace = "urn:com.flexnet.external.type", partName = "response")
-    public ConsolidatedLicense consolidateFulfillments(
-        @WebParam(name = "FulfillmentRecordSet", targetNamespace = "urn:com.flexnet.external.type", partName = "fulfillmentRecordset")
-        FulfillmentRecordSet fulfillmentRecordset)
+    ConsolidatedLicense consolidateFulfillments(@WebParam(name = "FulfillmentRecordSet", targetNamespace = "urn:com.flexnet.external.type", partName = "fulfillmentRecordset") FulfillmentRecordSet fulfillmentRecordset)
         throws LicGeneratorException
     ;
 
@@ -120,9 +110,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "generateLicenseFilenames")
     @WebResult(name = "LicenseFileDefinitionMap", targetNamespace = "urn:com.flexnet.external.type", partName = "fileNameResponse")
-    public LicenseFileDefinitionMap generateLicenseFilenames(
-        @WebParam(name = "FileNamesRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "fileRec")
-        GeneratorRequest fileRec)
+    LicenseFileDefinitionMap generateLicenseFilenames(@WebParam(name = "FileNamesRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "fileRec") GeneratorRequest fileRec)
         throws LicGeneratorException
     ;
 
@@ -135,9 +123,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "generateConsolidatedLicenseFilenames")
     @WebResult(name = "LicenseFileDefinitionMap", targetNamespace = "urn:com.flexnet.external.type", partName = "consoldatedFileNames")
-    public LicenseFileDefinitionMap generateConsolidatedLicenseFilenames(
-        @WebParam(name = "ConsolidatedLicenseResquest", targetNamespace = "urn:com.flexnet.external.type", partName = "clRec")
-        ConsolidatedLicenseResquest clRec)
+    LicenseFileDefinitionMap generateConsolidatedLicenseFilenames(@WebParam(name = "ConsolidatedLicenseResquest", targetNamespace = "urn:com.flexnet.external.type", partName = "clRec") ConsolidatedLicenseResquest clRec)
         throws LicGeneratorException
     ;
 
@@ -150,9 +136,7 @@ public interface LicenseGeneratorServiceInterface {
      */
     @WebMethod(action = "generateCustomHostIdentifier")
     @WebResult(name = "HostIdResponse", targetNamespace = "urn:com.flexnet.external.type", partName = "hostIdRes")
-    public String generateCustomHostIdentifier(
-        @WebParam(name = "HostIdRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "hostIdReq")
-        HostIdRequest hostIdReq)
+    String generateCustomHostIdentifier(@WebParam(name = "HostIdRequest", targetNamespace = "urn:com.flexnet.external.type", partName = "hostIdReq") HostIdRequest hostIdReq)
         throws LicGeneratorException
     ;
 

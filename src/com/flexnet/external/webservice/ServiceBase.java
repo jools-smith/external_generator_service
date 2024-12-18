@@ -1,25 +1,15 @@
 package com.flexnet.external.webservice;
 
 import com.flexnet.external.type.*;
-import com.flexnet.external.utils.Diagnostics;
 import com.flexnet.external.utils.Diagnostics.Token;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.utils.Utils;
-import com.flexnet.external.webservice.implementor.ImplementorFactory;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 
 public abstract class ServiceBase {
-
-
-
-
-  static {
-    // TODO: we can reduce this potentially -- once levels have been assessed
-    Log.setLoggingLevel(Log.Level.trace);
-  }
 
   protected final Log logger = Log.create(this.getClass());
 

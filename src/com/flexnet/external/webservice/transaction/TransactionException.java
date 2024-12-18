@@ -5,18 +5,9 @@ import com.flexnet.external.utils.Utils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 
 public class TransactionException extends RuntimeException {
-//  public static Function<Integer, String[]> frameDetails = (offset) -> {
-//    final StackTraceElement frame = Thread.currentThread().getStackTrace()[offset];
-//
-//    return new String[] {
-//            frame.getClassName(),
-//            frame.getMethodName(),
-//            String.valueOf(frame.getLineNumber())
-//    };
-//  };
 
   private static void assertNow(final String... parameters) {
 
@@ -33,14 +24,13 @@ public class TransactionException extends RuntimeException {
   }
 
   public static void assertNotNull(final Object obj) {
-    if (obj == null) {
-
+    if (Objects.isNull(obj)) {
       assertNow("null value not allowed");
     }
   }
 
   public static void assertNull(final Object obj) {
-    if (obj != null) {
+    if (Objects.nonNull(obj)) {
       assertNow("null value required", obj.getClass().getSimpleName());
     }
   }

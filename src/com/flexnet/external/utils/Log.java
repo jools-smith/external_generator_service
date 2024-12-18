@@ -22,6 +22,11 @@ public final class Log {
   static final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy hh:mm:ss.zzz");
 
   static AtomicReference<Log.Level> loggingLevel = new AtomicReference<>(Log.Level.trace);
+  private final Class<?> type;
+
+  private Log(final Class<?> cls) {
+    this.type = cls;
+  }
 
   public static boolean willLog(final Log.Level level) {
     return level.value >= loggingLevel.get().value;
@@ -30,45 +35,9 @@ public final class Log {
   public static Log.Level setLoggingLevel(final Log.Level level) {
     return loggingLevel.getAndSet(level);
   }
-  /**
-   * LEVEL
-   */
-  public enum Level  {
 
-    trace(0), debug(1), info(2), warning(3), error(4), severe(5);
-
-    public final int value;
-
-    Level(final int value) {
-      this.value = value;
-    }
-  }
-
-  private class Context {
-    final StackTraceElement element = new Throwable().getStackTrace()[3];
-    final Calendar calendar = GregorianCalendar.getInstance();
-
-    String getTime() {
-      return df.format(this.calendar.getTime());
-    }
-
-    String getClassName() {
-      return this.element.getClassName();
-    }
-
-    String getMethod() {
-      return this.element.getMethodName();
-    }
-
-    int getLine() {
-      return this.element.getLineNumber();
-    }
-  }
-
-  private final Class<?> type;
-
-  private Log(final Class<?> cls) {
-    this.type = cls;
+  public static Log create(final Class<?> type) {
+    return new Log(type);
   }
 
   public Class<?> type() {
@@ -95,14 +64,14 @@ public final class Log {
       final Context context = new Context();
 
       final String content = String.format("%s %s [%s] {%s} %s.%s(%d) %s",
-              context.getTime(),
-              level.toString().toUpperCase(),
-              Thread.currentThread().getName(),
-              type.getSimpleName(),
-              Utils.abbreviatePackageName(context.getClassName(), 30),
-              context.getMethod(),
-              context.getLine(),
-              message);
+                                           context.getTime(),
+                                           level.toString().toUpperCase(),
+                                           Thread.currentThread().getName(),
+                                           type.getSimpleName(),
+                                           Utils.abbreviatePackageName(context.getClassName(), 30),
+                                           context.getMethod(),
+                                           context.getLine(),
+                                           message);
 
       System.out.println(content);
 
@@ -127,7 +96,7 @@ public final class Log {
       exception(e);
     }
   }
-  
+
   public void in() {
     log(Level.trace, "->");
   }
@@ -135,30 +104,67 @@ public final class Log {
   public void me(final Object self) {
     array(Level.trace, self.getClass().getSimpleName(), Integer.toHexString(self.hashCode()));
   }
-  
+
   public void out() {
     log(Level.trace, "<-");
   }
-  
+
   public void exception(final Throwable t) {
     t.printStackTrace(System.err);
 
     final StackTraceElement frame = t.getStackTrace()[0];
 
     array(Level.severe,
-            t.getClass().getName(),
-            t.getLocalizedMessage(),
-            frame.getFileName(),
-            frame.getClassName(),
-            frame.getMethodName(),
-            frame.getLineNumber());
+          t.getClass().getName(),
+          t.getLocalizedMessage(),
+          frame.getFileName(),
+          frame.getClassName(),
+          frame.getMethodName(),
+          frame.getLineNumber());
   }
 
   public void array(final Level level, final Object... params) {
+
     log(level, Arrays.stream(params).map(Object::toString).collect(Collectors.joining(" | ")));
   }
 
-  public static Log create(final Class<?> type) {
-    return new Log(type);
+  /**
+   * LEVEL
+   */
+  public enum Level {
+
+    trace(0),
+    debug(1),
+    info(2),
+    warning(3),
+    error(4),
+    severe(5);
+
+    public final int value;
+
+    Level(final int value) {
+      this.value = value;
+    }
+  }
+
+  static class Context {
+    final StackTraceElement element = new Throwable().getStackTrace()[3];
+    final Calendar calendar = GregorianCalendar.getInstance();
+
+    String getTime() {
+      return df.format(this.calendar.getTime());
+    }
+
+    String getClassName() {
+      return this.element.getClassName();
+    }
+
+    String getMethod() {
+      return this.element.getMethodName();
+    }
+
+    int getLine() {
+      return this.element.getLineNumber();
+    }
   }
 }

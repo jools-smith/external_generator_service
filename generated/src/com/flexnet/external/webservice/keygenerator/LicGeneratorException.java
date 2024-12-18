@@ -20,7 +20,7 @@ public class LicGeneratorException
      * Java type that goes as soapenv:Fault detail element.
      * 
      */
-    private SvcException faultInfo;
+    private final SvcException faultInfo;
 
     /**
      * 

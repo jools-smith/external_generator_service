@@ -16,43 +16,50 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @WebListener
 public class Application implements ServletContextListener {
-  private static final AtomicReference<Application> singleton = new AtomicReference<>();
   private static final Log logger = Log.create(Application.class);
 
+  /** instance */
+  private static final AtomicReference<Application> singleton = new AtomicReference<>();
+  public static Application getInstance() {
+    return singleton.get();
+  }
+
+  /** build */
   private final String build;
+  public String getBuildSequence() {
+    return build;
+  }
+
+  /** version */
   private final String version;
+  public String getVersionDate() {
+    return version;
+  }
+
+  /** implementor factory */
   private final ImplementorFactory implementorFactory = new ImplementorFactory();
+  public final ImplementorFactory getImplementorFactory() {
+    return implementorFactory;
+  }
+
+  /** diagnostics */
   private final Diagnostics diagnostics = new Diagnostics();
+  public Diagnostics getDiagnostics() {
+    return diagnostics;
+  }
 
   public Application() {
+    /// we can reduce this potentially -- once levels have been assessed
+    Log.setLoggingLevel(Log.Level.trace);
+
     logger.me(this);
 
-    this.build = "3006";
+    this.build = "3007";
     this.version = "2024.12.17";
 
     singleton.getAndSet(this);
 
     logger.log(Log.Level.info, String.format("version | %s | %s", version, build));
-  }
-
-  public static Application getInstance() {
-    return singleton.get();
-  }
-
-  public Diagnostics getDiagnostics() {
-    return diagnostics;
-  }
-
-  public final ImplementorFactory getImplementorFactory() {
-    return implementorFactory;
-  }
-
-  public String getVersionDate() {
-    return version;
-  }
-
-  public String getBuild() {
-    return build;
   }
 
   @Override

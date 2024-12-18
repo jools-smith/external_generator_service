@@ -17,7 +17,7 @@ public final class Diagnostics {
 
   public final static Log logger = Log.create(Diagnostics.class);
 
-  private static Function<Duration, String> reformat = (d) -> {
+  private static final Function<Duration, String> reformat = (d) -> {
     final AtomicReference<String> str = new AtomicReference<>(d.toString().replace("PT","").replace("H",":").replace("M",":").replace("S",""));
     
     IntStream.range(0, 9).forEach(index -> {
@@ -27,7 +27,7 @@ public final class Diagnostics {
     return str.get();
   };
   
-  private static Function<Instant, Duration> elapseNow = (i) -> Duration.between(i,  Instant.now());
+  private static final Function<Instant, Duration> elapseNow = (i) -> Duration.between(i,  Instant.now());
   
   public final class Token {
     private final Class<?> clazz;

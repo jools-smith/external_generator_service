@@ -1,11 +1,10 @@
 package com.flexnet.external.webservice.implementor;
 
-import com.flexnet.external.utils.AnnotationManager;
-import com.flexnet.external.utils.GeneratorImplementor;
 import com.flexnet.external.utils.Log;
 import com.flexnet.external.webservice.keygenerator.LicenseGeneratorServiceInterface;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImplementorFactory {
   private final static Log logger = Log.create(ImplementorFactory.class);
@@ -18,7 +17,7 @@ public class ImplementorFactory {
 
     logger.log(Log.Level.debug, imp.technologyName() + " -> " + imp.getClass().getSimpleName());
 
-    this.implementors.put(imp.technologyName(), (LicenseGeneratorServiceInterface) imp);
+    this.implementors.put(imp.technologyName(), imp);
   }
 
   public LicenseGeneratorServiceInterface getDefaultImplementor() {
